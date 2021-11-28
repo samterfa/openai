@@ -1,4 +1,8 @@
 
+check_authentication <- function(){
+  if(Sys.getenv("openai_secret_key") == '') stop('Must set env var "openai_secret_key"')
+}
+
 parse_response <- function(response){
   
   response_content <- httr::content(response)
@@ -10,37 +14,10 @@ parse_response <- function(response){
   response_content %>% purrr::flatten_df()
 }
 
-list_engines <- function(return_response = F){
-  
-  base_url <- 'https://api.openai.com/v1'
-  endpoint <- 'engines'
-  
-  response <- httr::GET(url = glue::glue('{base_url}/{endpoint}'),
-                        httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-  
-  if(return_response) return(response)
-  
-  parse_response(response)
-}
-
-get_engine <- function(engine_id, return_response = F){
-  
-  base_url <- 'https://api.openai.com/v1'
-  endpoint <- glue::glue('engines/{engine_id}')
-  
-  response <- httr::GET(url = glue::glue('{base_url}/{endpoint}'),
-                        httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-  
-  if(return_response) return(response)
-  
-  parse_response(response)
-}
-
-
 parse_endpoints <- function(){
   
   endpoints <-
-    rvest::read_html('API Reference - OpenAI API.html') %>% 
+    rvest::read_html('data/API Reference - OpenAI API.html') %>% 
     rvest::html_elements('.endpoint')
   
   endpoints_df <- tibble::tibble()
@@ -71,7 +48,7 @@ parse_endpoints <- function(){
       endpoint %>%
       rvest::html_elements('p') %>%
       rvest::html_text() %>%
-      pluck(2) %>%
+      purrr::pluck(2) %>%
       glue::glue_collapse('\n')
     
     endpoint_df <-
@@ -181,7 +158,7 @@ parse_endpoints <- function(){
   
   endpoints_df <-
     endpoints_df %>%
-    mutate(across(param_required, ~ ifelse(is.na(param_required), F, param_required)))
+    dplyr::mutate(dplyr::across(param_required, ~ ifelse(is.na(param_required), F, param_required)))
 }
 
 generate_functions <- function(endpoints_df = parse_endpoints(), output_path = 'R/functions.R'){
@@ -190,16 +167,16 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
   
   functions_df <-
     endpoints_df %>%
-    mutate(function_name = 
+    dplyr::mutate(function_name = 
              endpoint_name %>% 
              snakecase::to_snake_case() %>% 
              stringr::str_remove_all('_beta')) %>%
-    relocate(function_name, .before = 1) 
+    dplyr::relocate(function_name, .before = 1) 
   
   functions_df_sub <-
     functions_df %>% 
-    select(starts_with(c('function', 'endpoint'))) %>%
-    distinct()
+    dplyr::select(tidyselect::starts_with(c('function', 'endpoint'))) %>%
+    dplyr::distinct()
   
   function_text <- "\n"
   
@@ -225,16 +202,16 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     function_text <-
       paste0(function_text, 
              glue::glue("\n#'\n", .trim = F))
-    
+   
     functions_df_params <- 
       functions_df %>% 
-      filter(function_name == !!function_name, !is.na(param_name)) %>% 
-      arrange(function_name, -param_required, param_name)
+      dplyr::filter(function_name == !!function_name, !is.na(param_name)) %>% 
+      dplyr::arrange(function_name, -param_required, param_name)
     
     # Add param info to documentation
     if(nrow(functions_df_params) > 0){
       
-      for(j in 1:nrow(functions_df_params %>% filter(!is.na(param_name)))){
+      for(j in 1:nrow(functions_df_params %>% dplyr::filter(!is.na(param_name)))){
         
         param_name <- functions_df_params$param_name[[j]]
         param_type <- functions_df_params$param_type[[j]]
@@ -246,9 +223,13 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
         function_text <-
           paste0(function_text,
                  glue::glue("#' @param {param_name} ({param_data_type}) {param_description} {ifelse(param_required, 'Required', '')}\n", .trim = F))
-        
+      
       }
     }
+    
+    function_text <-
+      paste0(function_text,
+             "#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).\n")
     
     # Wrap up documentation text
     function_text <-
@@ -263,7 +244,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     # Add param info to function definition
     if(nrow(functions_df_params) > 0){
       
-      for(j in 1:nrow(functions_df_params %>% filter(!is.na(param_name)))){
+      for(j in 1:nrow(functions_df_params %>% dplyr::filter(!is.na(param_name)))){
         
         param_name <- functions_df_params$param_name[[j]]
         param_type <- functions_df_params$param_type[[j]]
@@ -290,23 +271,27 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     # Fill out function definition
     function_text <- 
       paste0(function_text, 
+             "\tcheck_authentication()\n\n")
+    
+    function_text <- 
+      paste0(function_text, 
              glue::glue("\tendpoint_url <- glue::glue('{endpoint_url}')\n\n", .trim = F))
     
     # Grab params by type
     query_params <- 
       functions_df_params %>%
-      filter(param_type == 'query') %>% 
-      select(starts_with('param'))
+      dplyr::filter(param_type == 'query') %>% 
+      dplyr::select(tidyselect::starts_with('param'))
     
     body_params <- 
       functions_df_params %>%
-      filter(param_type == 'body') %>% 
-      select(starts_with('param'))
+      dplyr::filter(param_type == 'body') %>% 
+      dplyr::select(tidyselect::starts_with('param'))
     
     path_params <- 
       functions_df_params %>%
-      filter(param_type == 'path') %>% 
-      select(starts_with('param'))
+      dplyr::filter(param_type == 'path') %>% 
+      dplyr::select(tidyselect::starts_with('param'))
     
     # Update function_text with body param info
     if(nrow(body_params) > 0){

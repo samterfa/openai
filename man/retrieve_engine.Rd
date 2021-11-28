@@ -9,6 +9,8 @@ retrieve_engine(engine_id, return_response = F)
 }
 \arguments{
 \item{engine_id}{(string) The ID of the engine to use for this request Required}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 Retrieve Engine

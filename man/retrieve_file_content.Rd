@@ -9,6 +9,8 @@ retrieve_file_content(file_id, return_response = F)
 }
 \arguments{
 \item{file_id}{(string) The ID of the file to use for this request Required}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 Retrieve File Content

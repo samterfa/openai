@@ -11,6 +11,8 @@ list_fine_tune_events(fine_tune_id, stream = NULL, return_response = F)
 \item{fine_tune_id}{(string) The ID of the fine-tune job to get events for. Required}
 
 \item{stream}{(boolean) Whether to stream events for the fine-tune job. If set to true, events will be sent as data-only server-sent events as they become available. The stream will terminate with a data: \link{DONE} message when the job is finished (succeeded, cancelled, or failed). If set to false, only events generated so far will be returned.}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 List Fine-Tune Events - Beta

@@ -9,6 +9,8 @@ retrieve_fine_tune(fine_tune_id, return_response = F)
 }
 \arguments{
 \item{fine_tune_id}{(string) The ID of the fine-tune job Required}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 Retrieve Fine-Tune - Beta

@@ -3,8 +3,11 @@
 #' List Engines
 #' Lists the currently available engines, and provides basic information about each one such as the owner and availability.
 #'
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 list_engines <- function(return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/engines')
 
@@ -26,8 +29,11 @@ list_engines <- function(return_response = F){
 #' Retrieves an engine instance, providing basic information about the engine such as the owner and availability.
 #'
 #' @param engine_id (string) The ID of the engine to use for this request Required
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 retrieve_engine <- function(engine_id, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}')
 
@@ -62,13 +68,16 @@ retrieve_engine <- function(engine_id, return_response = F){
 #' @param stream (boolean) Whether to stream back partial progress. If set, tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data: [DONE] message. 
 #' @param temperature (number) What sampling temperature to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. We generally recommend altering this or top_p but not both. 
 #' @param top_p (number) An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered. We generally recommend altering this or temperature but not both. 
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_penalty = NULL, logit_bias = NULL, logprobs = NULL, max_tokens = NULL, n = NULL, presence_penalty = NULL, prompt = NULL, stop = NULL, stream = NULL, temperature = NULL, top_p = NULL, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/completions')
 
 	body_params <- c("best_of","echo","frequency_penalty","logit_bias","logprobs","max_tokens","n","presence_penalty","prompt","stop","stream","temperature","top_p")
-	body <- body_params %>% purrr::map(sym) %>% setNames(body_params)
+	body <- body_params %>% map(sym) %>% setNames(body_params)
 
 	query <- NULL
 
@@ -91,13 +100,16 @@ create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_
 #' @param file (string) The ID of an uploaded file that contains documents to search over. You should specify either documents or a file, but not both. 
 #' @param max_rerank (integer) The maximum number of documents to be re-ranked and returned by search. This flag only takes effect when file is set. 
 #' @param return_metadata (boolean) A special boolean flag for showing metadata. If set to true, each document entry in the returned JSON will contain a "metadata" field. This flag only takes effect when file is set. 
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 create_search <- function(engine_id, query, documents = NULL, file = NULL, max_rerank = NULL, return_metadata = NULL, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/search')
 
 	body_params <- c("query","documents","file","max_rerank","return_metadata")
-	body <- body_params %>% purrr::map(sym) %>% setNames(body_params)
+	body <- body_params %>% map(sym) %>% setNames(body_params)
 
 	query <- NULL
 
@@ -127,13 +139,16 @@ create_search <- function(engine_id, query, documents = NULL, file = NULL, max_r
 #' @param return_prompt (boolean) If set to true, the returned JSON will include a "prompt" field containing the final prompt that was used to request a completion. This is mainly useful for debugging purposes. 
 #' @param search_model (string) ID of the engine to use for Search. 
 #' @param temperature (number) What sampling temperature to use. Higher values mean the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. 
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 create_classification <- function(model, query, examples = NULL, expand = NULL, file = NULL, labels = NULL, logit_bias = NULL, logprobs = NULL, max_examples = NULL, return_metadata = NULL, return_prompt = NULL, search_model = NULL, temperature = NULL, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/classifications')
 
 	body_params <- c("model","query","examples","expand","file","labels","logit_bias","logprobs","max_examples","return_metadata","return_prompt","search_model","temperature")
-	body <- body_params %>% purrr::map(sym) %>% setNames(body_params)
+	body <- body_params %>% map(sym) %>% setNames(body_params)
 
 	query <- NULL
 
@@ -167,13 +182,16 @@ create_classification <- function(model, query, examples = NULL, expand = NULL, 
 #' @param search_model (string) ID of the engine to use for Search. 
 #' @param stop (string or array) Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence. 
 #' @param temperature (number) What sampling temperature to use. Higher values mean the model will take more risks and value 0 (argmax sampling) works better for scenarios with a well-defined answer. 
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 create_answer <- function(examples, examples_context, model, question, documents = NULL, expand = NULL, file = NULL, logit_bias = NULL, logprobs = NULL, max_rerank = NULL, max_tokens = NULL, n = NULL, return_metadata = NULL, return_prompt = NULL, search_model = NULL, stop = NULL, temperature = NULL, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/answers')
 
 	body_params <- c("examples","examples_context","model","question","documents","expand","file","logit_bias","logprobs","max_rerank","max_tokens","n","return_metadata","return_prompt","search_model","stop","temperature")
-	body <- body_params %>% purrr::map(sym) %>% setNames(body_params)
+	body <- body_params %>% map(sym) %>% setNames(body_params)
 
 	query <- NULL
 
@@ -190,8 +208,11 @@ create_answer <- function(examples, examples_context, model, question, documents
 #' List Files
 #' Returns a list of files that belong to the user's organization.
 #'
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 list_files <- function(return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/files')
 
@@ -214,13 +235,16 @@ list_files <- function(return_response = F){
 #'
 #' @param file (string) Name of the JSON Lines file to be uploaded. If the purpose is set to "search" or "answers", each line is a JSON record with a "text" field and an optional "metadata" field. Only "text" field will be used for search. Specially, when the purpose is "answers", "\n" is used as a delimiter to chunk contents in the "text" field into multiple documents for finer-grained matching. If the purpose is set to "classifications", each line is a JSON record representing a single training example with "text" and "label" fields along with an optional "metadata" field. If the purpose is set to "fine-tune", each line is a JSON record with "prompt" and "completion" fields representing your training examples. Required
 #' @param purpose (string) The intended purpose of the uploaded documents. Use "search" for Search, "answers" for Answers, "classifications" for Classifications and "fine-tune" for Fine-tuning. This allows us to validate the format of the uploaded file. Required
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 upload_file <- function(file, purpose, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/files')
 
 	body_params <- c("file","purpose")
-	body <- body_params %>% purrr::map(sym) %>% setNames(body_params)
+	body <- body_params %>% map(sym) %>% setNames(body_params)
 
 	query <- NULL
 
@@ -238,8 +262,11 @@ upload_file <- function(file, purpose, return_response = F){
 #' Delete a file.
 #'
 #' @param file_id (string) The ID of the file to use for this request Required
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 delete_file <- function(file_id, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}')
 
@@ -261,8 +288,11 @@ delete_file <- function(file_id, return_response = F){
 #' Returns information about a specific file.
 #'
 #' @param file_id (string) The ID of the file to use for this request Required
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 retrieve_file <- function(file_id, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}')
 
@@ -284,8 +314,11 @@ retrieve_file <- function(file_id, return_response = F){
 #' Returns the contents of the specified file
 #'
 #' @param file_id (string) The ID of the file to use for this request Required
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 retrieve_file_content <- function(file_id, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}/content')
 
@@ -318,13 +351,16 @@ retrieve_file_content <- function(file_id, return_response = F){
 #' @param prompt_loss_weight (number) The weight to use for loss on the prompt tokens. This controls how much the model tries to learn to generate the prompt (as compared to the completion which always has a weight of 1.0), and can add a stabilizing effect to training when completions are short. If prompts are extremely long (relative to completions), it may make sense to reduce this weight so as to avoid over-prioritizing learning the prompt. 
 #' @param use_packing (boolean) On classification tasks and small datasets, we recommend setting this to false. On all other tasks, we recommend setting this to true. When true, we pack as many prompt-completion pairs as possible into each training example. This greatly increases the speed of a fine-tuning job, often without negatively affecting model performance. In particular, with packing, each example in a training batch takes the form <prompt1><completion1><end_token><prompt2><completion2><end_token>.... Without packing, each example contains a single prompt-completion pair. By default, use_packing is true for datasets with at least 500k total tokens. 
 #' @param validation_file (string) The ID of an uploaded file that contains validation data. If you provide this file, the data is used to generate validation metrics periodically during fine-tuning. These metrics can be viewed in the fine-tuning results file. Your train and validation data should be mutually exclusive. Your dataset must be formatted as a JSONL file, where each validation example is a JSON object with the keys "prompt" and "completion". Additionally, you must upload your file with the purpose fine-tune. See the fine-tuning guide for more details. 
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 create_fine_tune <- function(training_file, batch_size = NULL, classification_betas = NULL, classification_n_classes = NULL, classification_positive_class = NULL, compute_classification_metrics = NULL, learning_rate_multiplier = NULL, model = NULL, n_epochs = NULL, prompt_loss_weight = NULL, use_packing = NULL, validation_file = NULL, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes')
 
 	body_params <- c("training_file","batch_size","classification_betas","classification_n_classes","classification_positive_class","compute_classification_metrics","learning_rate_multiplier","model","n_epochs","prompt_loss_weight","use_packing","validation_file")
-	body <- body_params %>% purrr::map(sym) %>% setNames(body_params)
+	body <- body_params %>% map(sym) %>% setNames(body_params)
 
 	query <- NULL
 
@@ -341,8 +377,11 @@ create_fine_tune <- function(training_file, batch_size = NULL, classification_be
 #' List Fine-Tunes - Beta
 #' List your organization's fine-tuning jobs
 #'
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 list_fine_tunes <- function(return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes')
 
@@ -364,8 +403,11 @@ list_fine_tunes <- function(return_response = F){
 #' Gets info about the fine-tune job.
 #'
 #' @param fine_tune_id (string) The ID of the fine-tune job Required
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 retrieve_fine_tune <- function(fine_tune_id, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}')
 
@@ -387,8 +429,11 @@ retrieve_fine_tune <- function(fine_tune_id, return_response = F){
 #' Immediately cancel a fine-tune job.
 #'
 #' @param fine_tune_id (string) The ID of the fine-tune job to cancel Required
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 cancel_fine_tune <- function(fine_tune_id, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}/cancel')
 
@@ -411,15 +456,18 @@ cancel_fine_tune <- function(fine_tune_id, return_response = F){
 #'
 #' @param fine_tune_id (string) The ID of the fine-tune job to get events for. Required
 #' @param stream (boolean) Whether to stream events for the fine-tune job. If set to true, events will be sent as data-only server-sent events as they become available. The stream will terminate with a data: [DONE] message when the job is finished (succeeded, cancelled, or failed). If set to false, only events generated so far will be returned. 
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @export
 list_fine_tune_events <- function(fine_tune_id, stream = NULL, return_response = F){
+
+	check_authentication()
 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}/events')
 
 	body <- NULL
 
 	query_params <- c("stream")
-	query <- query_params %>% purrr::map(sym) %>% setNames(query_params)
+	query <- query_params %>% map(sym) %>% setNames(query_params)
 
 	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 

@@ -48,6 +48,8 @@ create_classification(
 \item{search_model}{(string) ID of the engine to use for Search.}
 
 \item{temperature}{(number) What sampling temperature to use. Higher values mean the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 Create Classification - Beta

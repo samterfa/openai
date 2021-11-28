@@ -27,6 +27,8 @@ create_search(
 \item{max_rerank}{(integer) The maximum number of documents to be re-ranked and returned by search. This flag only takes effect when file is set.}
 
 \item{return_metadata}{(boolean) A special boolean flag for showing metadata. If set to true, each document entry in the returned JSON will contain a "metadata" field. This flag only takes effect when file is set.}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 Create Search

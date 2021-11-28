@@ -60,6 +60,8 @@ create_answer(
 \item{stop}{(string or array) Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.}
 
 \item{temperature}{(number) What sampling temperature to use. Higher values mean the model will take more risks and value 0 (argmax sampling) works better for scenarios with a well-defined answer.}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 Create Answer - Beta

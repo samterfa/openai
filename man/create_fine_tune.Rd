@@ -45,6 +45,8 @@ create_fine_tune(
 \item{use_packing}{(boolean) On classification tasks and small datasets, we recommend setting this to false. On all other tasks, we recommend setting this to true. When true, we pack as many prompt-completion pairs as possible into each training example. This greatly increases the speed of a fine-tuning job, often without negatively affecting model performance. In particular, with packing, each example in a training batch takes the form <prompt1><completion1><end_token><prompt2><completion2><end_token>.... Without packing, each example contains a single prompt-completion pair. By default, use_packing is true for datasets with at least 500k total tokens.}
 
 \item{validation_file}{(string) The ID of an uploaded file that contains validation data. If you provide this file, the data is used to generate validation metrics periodically during fine-tuning. These metrics can be viewed in the fine-tuning results file. Your train and validation data should be mutually exclusive. Your dataset must be formatted as a JSONL file, where each validation example is a JSON object with the keys "prompt" and "completion". Additionally, you must upload your file with the purpose fine-tune. See the fine-tuning guide for more details.}
+
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
 Create Fine-Tune - Beta

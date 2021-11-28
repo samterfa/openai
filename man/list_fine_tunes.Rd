@@ -7,6 +7,9 @@ List your organization's fine-tuning jobs}
 \usage{
 list_fine_tunes(return_response = F)
 }
+\arguments{
+\item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
+}
 \description{
 List Fine-Tunes - Beta
 List your organization's fine-tuning jobs
