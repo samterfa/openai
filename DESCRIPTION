@@ -1,0 +1,15 @@
+Package: openai
+Title: Consumes the Open AI API
+Version: 0.0.0.9000
+Authors@R: 
+    person("Sam", "Terfa", , "samterfa@gmail.com", role = c("aut", "cre"))
+Description: This package is an SDK for Open AI's API.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    glue,
+    httr,
+    magrittr,
+    purrr
