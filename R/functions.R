@@ -17,7 +17,7 @@ list_engines <- function(return_response = F){
 
 	query <- NULL
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -45,7 +45,7 @@ retrieve_engine <- function(engine_id, return_response = F){
 
 	query <- NULL
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -83,11 +83,11 @@ create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_
 	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/completions')
 
 	body_params <- c("best_of","echo","frequency_penalty","logit_bias","logprobs","max_tokens","n","presence_penalty","prompt","stop","stream","temperature","top_p")
-	body <- body_params %>% map(sym) %>% setNames(body_params)
+	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
 
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -117,11 +117,11 @@ create_search <- function(engine_id, query, documents = NULL, file = NULL, max_r
 	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/search')
 
 	body_params <- c("query","documents","file","max_rerank","return_metadata")
-	body <- body_params %>% map(sym) %>% setNames(body_params)
+	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
 
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -158,11 +158,11 @@ create_classification <- function(model, query, examples = NULL, expand = NULL, 
 	endpoint_url <- glue::glue('https://api.openai.com/v1/classifications')
 
 	body_params <- c("model","query","examples","expand","file","labels","logit_bias","logprobs","max_examples","return_metadata","return_prompt","search_model","temperature")
-	body <- body_params %>% map(sym) %>% setNames(body_params)
+	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
 
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -203,11 +203,11 @@ create_answer <- function(examples, examples_context, model, question, documents
 	endpoint_url <- glue::glue('https://api.openai.com/v1/answers')
 
 	body_params <- c("examples","examples_context","model","question","documents","expand","file","logit_bias","logprobs","max_rerank","max_tokens","n","return_metadata","return_prompt","search_model","stop","temperature")
-	body <- body_params %>% map(sym) %>% setNames(body_params)
+	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
 
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -234,7 +234,7 @@ list_files <- function(return_response = F){
 
 	query <- NULL
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -260,11 +260,11 @@ upload_file <- function(file, purpose, return_response = F){
 	endpoint_url <- glue::glue('https://api.openai.com/v1/files')
 
 	body_params <- c("file","purpose")
-	body <- body_params %>% map(sym) %>% setNames(body_params)
+	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
 
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -292,7 +292,7 @@ delete_file <- function(file_id, return_response = F){
 
 	query <- NULL
 
-	response <- httr::DELETE(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::DELETE(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -320,7 +320,7 @@ retrieve_file <- function(file_id, return_response = F){
 
 	query <- NULL
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -348,7 +348,7 @@ retrieve_file_content <- function(file_id, return_response = F){
 
 	query <- NULL
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -384,11 +384,11 @@ create_fine_tune <- function(training_file, batch_size = NULL, classification_be
 	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes')
 
 	body_params <- c("training_file","batch_size","classification_betas","classification_n_classes","classification_positive_class","compute_classification_metrics","learning_rate_multiplier","model","n_epochs","prompt_loss_weight","use_packing","validation_file")
-	body <- body_params %>% map(sym) %>% setNames(body_params)
+	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
 
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -415,7 +415,7 @@ list_fine_tunes <- function(return_response = F){
 
 	query <- NULL
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -443,7 +443,7 @@ retrieve_fine_tune <- function(fine_tune_id, return_response = F){
 
 	query <- NULL
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -471,7 +471,7 @@ cancel_fine_tune <- function(fine_tune_id, return_response = F){
 
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -499,9 +499,9 @@ list_fine_tune_events <- function(fine_tune_id, stream = NULL, return_response =
 	body <- NULL
 
 	query_params <- c("stream")
-	query <- query_params %>% map(sym) %>% setNames(query_params)
+	query <- query_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(query_params) %>% purrr::compact()
 
-	response <- httr::GET(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 

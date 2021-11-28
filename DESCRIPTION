@@ -12,4 +12,5 @@ Imports:
     glue,
     httr,
     magrittr,
-    purrr
+    purrr,
+    rlang

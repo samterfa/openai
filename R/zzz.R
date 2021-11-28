@@ -5,13 +5,7 @@ check_authentication <- function(){
 
 parse_response <- function(response){
   
-  response_content <- httr::content(response)
-  
-  if('object' %in% names(response_content) && response_content$object == 'list' && 'data' %in% names(response_content)){
-    return(response_content$data %>% purrr::map_dfr(~.x))
-  }
-  
-  response_content %>% purrr::flatten_df()
+  httr::content(response)
 }
 
 parse_endpoints <- function(){
@@ -314,7 +308,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
       function_text <-
         paste0(function_text,
                glue::glue("\tbody_params <- c({paste0('\"', paste(body_params$param_name, collapse = '\",\"'), '\"')})\n", .trim = F),
-               glue::glue("\tbody <- body_params %>% map(sym) %>% setNames(body_params)\n\n", .trim = F))
+               glue::glue("\tbody <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()\n\n", .trim = F))
     }else{
       function_text <-
         paste0(function_text,
@@ -326,7 +320,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
       function_text <-
         paste0(function_text,
                glue::glue("\tquery_params <- c({paste0('\"', paste(query_params$param_name, collapse = '\",\"'), '\"')})\n", .trim = F),
-               glue::glue("\tquery <- query_params %>% map(sym) %>% setNames(query_params)\n\n", .trim = F))
+               glue::glue("\tquery <- query_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(query_params) %>% purrr::compact()\n\n", .trim = F))
     }else{
       function_text <-
         paste0(function_text,
@@ -335,7 +329,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     
     function_text <-
       paste0(function_text,
-             glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, query = query, httr::add_headers(authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
+             glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
     
     function_text <-
       paste0(function_text,
