@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_answer}
 \alias{create_answer}
-\title{Create Answer - Beta
-Answers the specified question using the provided documents and examples.}
+\title{Create Answer - Beta}
 \usage{
 create_answer(
   examples,
@@ -64,6 +63,8 @@ create_answer(
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Create Answer - Beta
 Answers the specified question using the provided documents and examples.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/answers/create}{Open AI Documentation}
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{list_fine_tunes}
 \alias{list_fine_tunes}
-\title{List Fine-Tunes - Beta
-List your organization's fine-tuning jobs}
+\title{List Fine-Tunes - Beta}
 \usage{
 list_fine_tunes(return_response = F)
 }
@@ -11,6 +10,8 @@ list_fine_tunes(return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-List Fine-Tunes - Beta
 List your organization's fine-tuning jobs
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/fine-tunes/list}{Open AI Documentation}
 }

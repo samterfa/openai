@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{retrieve_file}
 \alias{retrieve_file}
-\title{Retrieve File
-Returns information about a specific file.}
+\title{Retrieve File}
 \usage{
 retrieve_file(file_id, return_response = F)
 }
@@ -13,6 +12,8 @@ retrieve_file(file_id, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Retrieve File
 Returns information about a specific file.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/files/retrieve}{Open AI Documentation}
 }

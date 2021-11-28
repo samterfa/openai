@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{list_engines}
 \alias{list_engines}
-\title{List Engines
-Lists the currently available engines, and provides basic information about each one such as the owner and availability.}
+\title{List Engines}
 \usage{
 list_engines(return_response = F)
 }
@@ -11,6 +10,8 @@ list_engines(return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-List Engines
 Lists the currently available engines, and provides basic information about each one such as the owner and availability.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/engines/list}{Open AI Documentation}
 }

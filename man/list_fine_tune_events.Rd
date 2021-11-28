@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{list_fine_tune_events}
 \alias{list_fine_tune_events}
-\title{List Fine-Tune Events - Beta
-Get fine-grained status updates for a fine-tune job.}
+\title{List Fine-Tune Events - Beta}
 \usage{
 list_fine_tune_events(fine_tune_id, stream = NULL, return_response = F)
 }
@@ -15,6 +14,8 @@ list_fine_tune_events(fine_tune_id, stream = NULL, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-List Fine-Tune Events - Beta
 Get fine-grained status updates for a fine-tune job.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/fine-tunes/events}{Open AI Documentation}
 }

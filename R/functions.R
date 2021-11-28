@@ -1,9 +1,11 @@
 
 
 #' List Engines
+#'
 #' Lists the currently available engines, and provides basic information about each one such as the owner and availability.
 #'
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/engines/list}{Open AI Documentation}
 #' @export
 list_engines <- function(return_response = F){
 
@@ -26,10 +28,12 @@ list_engines <- function(return_response = F){
 
 
 #' Retrieve Engine
+#'
 #' Retrieves an engine instance, providing basic information about the engine such as the owner and availability.
 #'
 #' @param engine_id (string) The ID of the engine to use for this request Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/engines/retrieve}{Open AI Documentation}
 #' @export
 retrieve_engine <- function(engine_id, return_response = F){
 
@@ -52,6 +56,7 @@ retrieve_engine <- function(engine_id, return_response = F){
 
 
 #' Create Completion
+#'
 #' Creates a new completion for the provided prompt and parameters
 #'
 #' @param engine_id (string) The ID of the engine to use for this request Required
@@ -69,6 +74,7 @@ retrieve_engine <- function(engine_id, return_response = F){
 #' @param temperature (number) What sampling temperature to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. We generally recommend altering this or top_p but not both. 
 #' @param top_p (number) An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered. We generally recommend altering this or temperature but not both. 
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/completions/create}{Open AI Documentation}
 #' @export
 create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_penalty = NULL, logit_bias = NULL, logprobs = NULL, max_tokens = NULL, n = NULL, presence_penalty = NULL, prompt = NULL, stop = NULL, stream = NULL, temperature = NULL, top_p = NULL, return_response = F){
 
@@ -92,6 +98,7 @@ create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_
 
 
 #' Create Search
+#'
 #' The search endpoint computes similarity scores between provided query and documents. Documents can be passed directly to the API if there are no more than 200 of them.
 #'
 #' @param engine_id (string) The ID of the engine to use for this request Required
@@ -101,6 +108,7 @@ create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_
 #' @param max_rerank (integer) The maximum number of documents to be re-ranked and returned by search. This flag only takes effect when file is set. 
 #' @param return_metadata (boolean) A special boolean flag for showing metadata. If set to true, each document entry in the returned JSON will contain a "metadata" field. This flag only takes effect when file is set. 
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/searches/create}{Open AI Documentation}
 #' @export
 create_search <- function(engine_id, query, documents = NULL, file = NULL, max_rerank = NULL, return_metadata = NULL, return_response = F){
 
@@ -124,6 +132,7 @@ create_search <- function(engine_id, query, documents = NULL, file = NULL, max_r
 
 
 #' Create Classification - Beta
+#'
 #' Classifies the specified query using provided examples.
 #'
 #' @param model (string) ID of the engine to use for completion. Required
@@ -140,6 +149,7 @@ create_search <- function(engine_id, query, documents = NULL, file = NULL, max_r
 #' @param search_model (string) ID of the engine to use for Search. 
 #' @param temperature (number) What sampling temperature to use. Higher values mean the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. 
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/classifications/create}{Open AI Documentation}
 #' @export
 create_classification <- function(model, query, examples = NULL, expand = NULL, file = NULL, labels = NULL, logit_bias = NULL, logprobs = NULL, max_examples = NULL, return_metadata = NULL, return_prompt = NULL, search_model = NULL, temperature = NULL, return_response = F){
 
@@ -163,6 +173,7 @@ create_classification <- function(model, query, examples = NULL, expand = NULL, 
 
 
 #' Create Answer - Beta
+#'
 #' Answers the specified question using the provided documents and examples.
 #'
 #' @param examples (array) List of (question, answer) pairs that will help steer the model towards the tone and answer format you'd like. We recommend adding 2 to 3 examples. Required
@@ -183,6 +194,7 @@ create_classification <- function(model, query, examples = NULL, expand = NULL, 
 #' @param stop (string or array) Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence. 
 #' @param temperature (number) What sampling temperature to use. Higher values mean the model will take more risks and value 0 (argmax sampling) works better for scenarios with a well-defined answer. 
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/answers/create}{Open AI Documentation}
 #' @export
 create_answer <- function(examples, examples_context, model, question, documents = NULL, expand = NULL, file = NULL, logit_bias = NULL, logprobs = NULL, max_rerank = NULL, max_tokens = NULL, n = NULL, return_metadata = NULL, return_prompt = NULL, search_model = NULL, stop = NULL, temperature = NULL, return_response = F){
 
@@ -206,9 +218,11 @@ create_answer <- function(examples, examples_context, model, question, documents
 
 
 #' List Files
+#'
 #' Returns a list of files that belong to the user's organization.
 #'
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/files/list}{Open AI Documentation}
 #' @export
 list_files <- function(return_response = F){
 
@@ -231,11 +245,13 @@ list_files <- function(return_response = F){
 
 
 #' Upload File
+#'
 #' Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
 #'
 #' @param file (string) Name of the JSON Lines file to be uploaded. If the purpose is set to "search" or "answers", each line is a JSON record with a "text" field and an optional "metadata" field. Only "text" field will be used for search. Specially, when the purpose is "answers", "\n" is used as a delimiter to chunk contents in the "text" field into multiple documents for finer-grained matching. If the purpose is set to "classifications", each line is a JSON record representing a single training example with "text" and "label" fields along with an optional "metadata" field. If the purpose is set to "fine-tune", each line is a JSON record with "prompt" and "completion" fields representing your training examples. Required
 #' @param purpose (string) The intended purpose of the uploaded documents. Use "search" for Search, "answers" for Answers, "classifications" for Classifications and "fine-tune" for Fine-tuning. This allows us to validate the format of the uploaded file. Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/files/upload}{Open AI Documentation}
 #' @export
 upload_file <- function(file, purpose, return_response = F){
 
@@ -259,10 +275,12 @@ upload_file <- function(file, purpose, return_response = F){
 
 
 #' Delete File
+#'
 #' Delete a file.
 #'
 #' @param file_id (string) The ID of the file to use for this request Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/files/delete}{Open AI Documentation}
 #' @export
 delete_file <- function(file_id, return_response = F){
 
@@ -285,10 +303,12 @@ delete_file <- function(file_id, return_response = F){
 
 
 #' Retrieve File
+#'
 #' Returns information about a specific file.
 #'
 #' @param file_id (string) The ID of the file to use for this request Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/files/retrieve}{Open AI Documentation}
 #' @export
 retrieve_file <- function(file_id, return_response = F){
 
@@ -311,10 +331,12 @@ retrieve_file <- function(file_id, return_response = F){
 
 
 #' Retrieve File Content
+#'
 #' Returns the contents of the specified file
 #'
 #' @param file_id (string) The ID of the file to use for this request Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/files/retrieve-content}{Open AI Documentation}
 #' @export
 retrieve_file_content <- function(file_id, return_response = F){
 
@@ -337,6 +359,7 @@ retrieve_file_content <- function(file_id, return_response = F){
 
 
 #' Create Fine-Tune - Beta
+#'
 #' Creates a job that fine-tunes a specified model from a given dataset.
 #'
 #' @param training_file (string) The ID of an uploaded file that contains training data. See upload file for how to upload a file. Your dataset must be formatted as a JSONL file, where each training example is a JSON object with the keys "prompt" and "completion". Additionally, you must upload your file with the purpose fine-tune. See the fine-tuning guide for more details. Required
@@ -352,6 +375,7 @@ retrieve_file_content <- function(file_id, return_response = F){
 #' @param use_packing (boolean) On classification tasks and small datasets, we recommend setting this to false. On all other tasks, we recommend setting this to true. When true, we pack as many prompt-completion pairs as possible into each training example. This greatly increases the speed of a fine-tuning job, often without negatively affecting model performance. In particular, with packing, each example in a training batch takes the form <prompt1><completion1><end_token><prompt2><completion2><end_token>.... Without packing, each example contains a single prompt-completion pair. By default, use_packing is true for datasets with at least 500k total tokens. 
 #' @param validation_file (string) The ID of an uploaded file that contains validation data. If you provide this file, the data is used to generate validation metrics periodically during fine-tuning. These metrics can be viewed in the fine-tuning results file. Your train and validation data should be mutually exclusive. Your dataset must be formatted as a JSONL file, where each validation example is a JSON object with the keys "prompt" and "completion". Additionally, you must upload your file with the purpose fine-tune. See the fine-tuning guide for more details. 
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/create}{Open AI Documentation}
 #' @export
 create_fine_tune <- function(training_file, batch_size = NULL, classification_betas = NULL, classification_n_classes = NULL, classification_positive_class = NULL, compute_classification_metrics = NULL, learning_rate_multiplier = NULL, model = NULL, n_epochs = NULL, prompt_loss_weight = NULL, use_packing = NULL, validation_file = NULL, return_response = F){
 
@@ -375,9 +399,11 @@ create_fine_tune <- function(training_file, batch_size = NULL, classification_be
 
 
 #' List Fine-Tunes - Beta
+#'
 #' List your organization's fine-tuning jobs
 #'
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/list}{Open AI Documentation}
 #' @export
 list_fine_tunes <- function(return_response = F){
 
@@ -400,10 +426,12 @@ list_fine_tunes <- function(return_response = F){
 
 
 #' Retrieve Fine-Tune - Beta
+#'
 #' Gets info about the fine-tune job.
 #'
 #' @param fine_tune_id (string) The ID of the fine-tune job Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/retrieve}{Open AI Documentation}
 #' @export
 retrieve_fine_tune <- function(fine_tune_id, return_response = F){
 
@@ -426,10 +454,12 @@ retrieve_fine_tune <- function(fine_tune_id, return_response = F){
 
 
 #' Cancel Fine-Tune - Beta
+#'
 #' Immediately cancel a fine-tune job.
 #'
 #' @param fine_tune_id (string) The ID of the fine-tune job to cancel Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/cancel}{Open AI Documentation}
 #' @export
 cancel_fine_tune <- function(fine_tune_id, return_response = F){
 
@@ -452,11 +482,13 @@ cancel_fine_tune <- function(fine_tune_id, return_response = F){
 
 
 #' List Fine-Tune Events - Beta
+#'
 #' Get fine-grained status updates for a fine-tune job.
 #'
 #' @param fine_tune_id (string) The ID of the fine-tune job to get events for. Required
 #' @param stream (boolean) Whether to stream events for the fine-tune job. If set to true, events will be sent as data-only server-sent events as they become available. The stream will terminate with a data: [DONE] message when the job is finished (succeeded, cancelled, or failed). If set to false, only events generated so far will be returned. 
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/events}{Open AI Documentation}
 #' @export
 list_fine_tune_events <- function(fine_tune_id, stream = NULL, return_response = F){
 

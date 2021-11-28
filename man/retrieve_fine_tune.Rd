@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{retrieve_fine_tune}
 \alias{retrieve_fine_tune}
-\title{Retrieve Fine-Tune - Beta
-Gets info about the fine-tune job.}
+\title{Retrieve Fine-Tune - Beta}
 \usage{
 retrieve_fine_tune(fine_tune_id, return_response = F)
 }
@@ -13,6 +12,8 @@ retrieve_fine_tune(fine_tune_id, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Retrieve Fine-Tune - Beta
 Gets info about the fine-tune job.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/fine-tunes/retrieve}{Open AI Documentation}
 }

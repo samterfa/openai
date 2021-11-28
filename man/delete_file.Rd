@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{delete_file}
 \alias{delete_file}
-\title{Delete File
-Delete a file.}
+\title{Delete File}
 \usage{
 delete_file(file_id, return_response = F)
 }
@@ -13,6 +12,8 @@ delete_file(file_id, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Delete File
 Delete a file.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/files/delete}{Open AI Documentation}
 }

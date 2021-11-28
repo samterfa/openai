@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_completion}
 \alias{create_completion}
-\title{Create Completion
-Creates a new completion for the provided prompt and parameters}
+\title{Create Completion}
 \usage{
 create_completion(
   engine_id,
@@ -55,6 +54,8 @@ create_completion(
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Create Completion
 Creates a new completion for the provided prompt and parameters
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/completions/create}{Open AI Documentation}
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{list_files}
 \alias{list_files}
-\title{List Files
-Returns a list of files that belong to the user's organization.}
+\title{List Files}
 \usage{
 list_files(return_response = F)
 }
@@ -11,6 +10,8 @@ list_files(return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-List Files
 Returns a list of files that belong to the user's organization.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/files/list}{Open AI Documentation}
 }

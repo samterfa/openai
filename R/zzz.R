@@ -26,6 +26,12 @@ parse_endpoints <- function(){
     
     endpoint_df <- tibble::tibble()
     
+    endpoint_documentation <-
+      endpoint %>%
+      rvest::html_elements('a') %>%
+      rvest::html_attr('href') %>%
+      purrr::pluck(1)
+     
     endpoint_name <- 
       endpoint %>%
       rvest::html_elements('a h2') %>%
@@ -57,7 +63,8 @@ parse_endpoints <- function(){
         tibble::tibble(endpoint_name = endpoint_name,
                        endpoint_method = endpoint_method,
                        endpoint_url = endpoint_url,
-                       endpoint_description = endpoint_description)
+                       endpoint_description = endpoint_description,
+                       endpoint_documentation = endpoint_documentation)
       )
     
     endpoint_params_sections <-
@@ -188,11 +195,16 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     endpoint_method <- functions_df_sub$endpoint_method[[i]]
     endpoint_url <- functions_df_sub$endpoint_url[[i]]
     endpoint_description <- functions_df_sub$endpoint_description[[i]]
+    endpoint_documentation <- functions_df_sub$endpoint_documentation[[i]]
     
     # Add Function Title
     function_text <-
       paste0(function_text, 
              glue::glue("\n#' {endpoint_name}", .trim = F))
+    
+    function_text <-
+      paste0(function_text, 
+             glue::glue("\n#'", .trim = F))
     
     # Add Function Description
     function_text <-
@@ -227,11 +239,15 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
       }
     }
     
+    # Wrap up documentation text
     function_text <-
       paste0(function_text,
              "#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).\n")
     
-    # Wrap up documentation text
+    function_text <-
+      paste0(function_text,
+            glue::glue("#' @seealso \\href{>>>endpoint_documentation<<<}{Open AI Documentation}\n", .trim = F, .open = '>>>', .close = '<<<'))
+    
     function_text <-
       paste0(function_text,
              "#' @export\n")

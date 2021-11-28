@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_search}
 \alias{create_search}
-\title{Create Search
-The search endpoint computes similarity scores between provided query and documents. Documents can be passed directly to the API if there are no more than 200 of them.}
+\title{Create Search}
 \usage{
 create_search(
   engine_id,
@@ -31,6 +30,8 @@ create_search(
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Create Search
 The search endpoint computes similarity scores between provided query and documents. Documents can be passed directly to the API if there are no more than 200 of them.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/searches/create}{Open AI Documentation}
 }

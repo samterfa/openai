@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{retrieve_engine}
 \alias{retrieve_engine}
-\title{Retrieve Engine
-Retrieves an engine instance, providing basic information about the engine such as the owner and availability.}
+\title{Retrieve Engine}
 \usage{
 retrieve_engine(engine_id, return_response = F)
 }
@@ -13,6 +12,8 @@ retrieve_engine(engine_id, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Retrieve Engine
 Retrieves an engine instance, providing basic information about the engine such as the owner and availability.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/engines/retrieve}{Open AI Documentation}
 }

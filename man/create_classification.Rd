@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_classification}
 \alias{create_classification}
-\title{Create Classification - Beta
-Classifies the specified query using provided examples.}
+\title{Create Classification - Beta}
 \usage{
 create_classification(
   model,
@@ -52,6 +51,8 @@ create_classification(
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Create Classification - Beta
 Classifies the specified query using provided examples.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/classifications/create}{Open AI Documentation}
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{cancel_fine_tune}
 \alias{cancel_fine_tune}
-\title{Cancel Fine-Tune - Beta
-Immediately cancel a fine-tune job.}
+\title{Cancel Fine-Tune - Beta}
 \usage{
 cancel_fine_tune(fine_tune_id, return_response = F)
 }
@@ -13,6 +12,8 @@ cancel_fine_tune(fine_tune_id, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Cancel Fine-Tune - Beta
 Immediately cancel a fine-tune job.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/fine-tunes/cancel}{Open AI Documentation}
 }

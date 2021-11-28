@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{retrieve_file_content}
 \alias{retrieve_file_content}
-\title{Retrieve File Content
-Returns the contents of the specified file}
+\title{Retrieve File Content}
 \usage{
 retrieve_file_content(file_id, return_response = F)
 }
@@ -13,6 +12,8 @@ retrieve_file_content(file_id, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Retrieve File Content
 Returns the contents of the specified file
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/files/retrieve-content}{Open AI Documentation}
 }

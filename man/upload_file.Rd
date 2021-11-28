@@ -2,8 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{upload_file}
 \alias{upload_file}
-\title{Upload File
-Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.}
+\title{Upload File}
 \usage{
 upload_file(file, purpose, return_response = F)
 }
@@ -15,6 +14,8 @@ upload_file(file, purpose, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Upload File
 Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+}
+\seealso{
+\href{https://beta.openai.com/docs/api-reference/files/upload}{Open AI Documentation}
 }
