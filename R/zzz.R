@@ -31,7 +31,7 @@ parse_endpoints <- function(){
       rvest::html_elements('a') %>%
       rvest::html_attr('href') %>%
       purrr::pluck(1)
-     
+    
     endpoint_name <- 
       endpoint %>%
       rvest::html_elements('a h2') %>%
@@ -175,9 +175,9 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
   functions_df <-
     endpoints_df %>%
     dplyr::mutate(function_name = 
-             endpoint_name %>% 
-             snakecase::to_snake_case() %>% 
-             stringr::str_remove_all('_beta')) %>%
+                    endpoint_name %>% 
+                    snakecase::to_snake_case() %>% 
+                    stringr::str_remove_all('_beta')) %>%
     dplyr::relocate(function_name, .before = 1) 
   
   functions_df_sub <-
@@ -214,7 +214,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     function_text <-
       paste0(function_text, 
              glue::glue("\n#'\n", .trim = F))
-   
+    
     functions_df_params <- 
       functions_df %>% 
       dplyr::filter(function_name == !!function_name, !is.na(param_name)) %>% 
@@ -235,7 +235,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
         function_text <-
           paste0(function_text,
                  glue::glue("#' @param {param_name} ({param_data_type}) {param_description} {ifelse(param_required, 'Required', '')}\n", .trim = F))
-      
+        
       }
     }
     
@@ -246,7 +246,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     
     function_text <-
       paste0(function_text,
-            glue::glue("#' @seealso \\href{>>>endpoint_documentation<<<}{Open AI Documentation}\n", .trim = F, .open = '>>>', .close = '<<<'))
+             glue::glue("#' @seealso \\href{>>>endpoint_documentation<<<}{Open AI Documentation}\n", .trim = F, .open = '>>>', .close = '<<<'))
     
     function_text <-
       paste0(function_text,
@@ -321,6 +321,13 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
                glue::glue("\tbody <- NULL\n\n", .trim = F))
     }
     
+    # Facilitate uploading files
+    if(function_name == 'upload_file'){
+      function_text <-
+        paste0(function_text,
+               "\tbody$file <- httr::upload_file(body$file)\n\n")
+    }
+    
     # Update function_text with query param info
     if(nrow(query_params) > 0){
       function_text <-
@@ -333,9 +340,16 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
                glue::glue("\tquery <- NULL\n\n", .trim = F))
     }
     
-    function_text <-
-      paste0(function_text,
-             glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
+    # Facilitate uploading files
+    if(function_name == 'upload_file'){
+      function_text <-
+        paste0(function_text,
+               glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
+    }else{
+      function_text <-
+        paste0(function_text,
+               glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
+    }
     
     function_text <-
       paste0(function_text,

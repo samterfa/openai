@@ -262,9 +262,11 @@ upload_file <- function(file, purpose, return_response = F){
 	body_params <- c("file","purpose")
 	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
 
+	body$file <- httr::upload_file(body$file)
+
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
