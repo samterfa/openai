@@ -1,18 +1,28 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = T,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # openai
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-openai provides R scripts to use the [Open AI
-API](https://beta.openai.com/docs/api-reference/)
+openai provides R scripts to use the [Open AI API](https://beta.openai.com/docs/api-reference/)
 
 ## Installation
 
-You can install the development version of openai from
-[GitHub](https://github.com/samterfa/openai) with:
+You can install the development version of openai from [GitHub](https://github.com/samterfa/openai) with:
 
 ``` r
 # install.packages("devtools")
@@ -21,46 +31,31 @@ devtools::install_github("samterfa/openai")
 
 ## Set Up
 
-Access to the API is still limited and must be
-[requested](https://openai.com/join/). Once granted, API calls are
-authenticated using your [API
-keys](https://beta.openai.com/account/api-keys). The environment
-variables set below are consulted while making each call.
+Access to the API is still limited and must be [requested](https://openai.com/join/). Once granted, API calls are authenticated using your [API keys](https://beta.openai.com/account/api-keys). The environment variables set below are consulted while making each call.
 
-``` r
+```{r, eval=F}
 Sys.setenv(openai_organization_id = {your_organization_id})
 Sys.setenv(openai_secret_key = {your_secret_key})
 ```
 
-More details on authentication can be found
-[here](https://beta.openai.com/docs/api-reference/authentication).
+More details on authentication can be found [here](https://beta.openai.com/docs/api-reference/authentication).
 
 ## Examples
 
 Retrieve the currently available engines used to generate text.
 
-``` r
+```{r}
 library(openai)
 library(purrr)
 
 list_engines() %>% 
   pluck('data') %>% 
   map_dfr(compact)
-#> # A tibble: 7 × 4
-#>   id                       object owner  ready
-#>   <chr>                    <chr>  <chr>  <lgl>
-#> 1 ada                      engine openai TRUE 
-#> 2 babbage                  engine openai TRUE 
-#> 3 curie                    engine openai TRUE 
-#> 4 curie-instruct-beta      engine openai TRUE 
-#> 5 davinci                  engine openai TRUE 
-#> 6 davinci-instruct-beta    engine openai TRUE 
-#> 7 davinci-instruct-beta-v3 engine openai TRUE
 ```
 
 Create a completion request using the ada engine.
 
-``` r
+```{r}
 create_completion(
   engine_id = 'davinci', 
   max_tokens = 5,
@@ -72,12 +67,11 @@ create_completion(
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)
-#> [1] "Once upon a time, Donald Trump was not"
 ```
 
 Classify a query based on provided examples.
 
-``` r
+```{r}
 create_classification(
   query = "It is a rainy day :(", 
   examples = 
@@ -89,12 +83,11 @@ create_classification(
   search_model = 'ada', 
   model = 'curie') %>%
   pluck('label')
-#> [1] "Negative"
 ```
 
 Answer a question based on context and provided documents.
 
-``` r
+```{r}
 create_answer(
   documents = list("Puppy A is happy.", "Puppy B is sad."),
   question = "which puppy is happy?",
@@ -106,5 +99,6 @@ create_answer(
 ) %>%
   pluck('answers') %>%
   pluck(1)
-#> [1] "puppy A."
 ```
+
+

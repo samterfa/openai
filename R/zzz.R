@@ -329,7 +329,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     
     function_text <-
       paste0(function_text,
-             glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
+             glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
     
     function_text <-
       paste0(function_text,
