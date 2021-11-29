@@ -63,7 +63,6 @@ create_completion(
   top_p = 1,
   n = 1,
   stream = F, 
-  echo = T,
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)

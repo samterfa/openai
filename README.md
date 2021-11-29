@@ -68,11 +68,10 @@ create_completion(
   top_p = 1,
   n = 1,
   stream = F, 
-  echo = T,
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)
-#> [1] "Once upon a time, Donald Trump was not"
+#> [1] " we turned $200 into"
 ```
 
 Classify a query based on provided examples.

@@ -5,7 +5,13 @@ check_authentication <- function(){
 
 parse_response <- function(response){
   
-  httr::content(response)
+  response_content <- httr::content(response)
+  
+  if('error' %in% names(response_content)) stop(response_content$error$message)
+  
+  if(response$status_code >= 300) stop(response_content)
+  
+  response_content
 }
 
 parse_endpoints <- function(){
