@@ -53,7 +53,7 @@ list_engines() %>%
   map_dfr(compact)
 ```
 
-Create a completion request using the ada engine.
+Create a completion request using the davinci engine.
 
 ```{r}
 create_completion(

@@ -58,7 +58,7 @@ list_engines() %>%
 #> 7 davinci-instruct-beta-v3 engine openai TRUE
 ```
 
-Create a completion request using the ada engine.
+Create a completion request using the davinci engine.
 
 ``` r
 create_completion(
@@ -71,7 +71,7 @@ create_completion(
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)
-#> [1] " we turned $200 into"
+#> [1] ", I owned this beautiful"
 ```
 
 Classify a query based on provided examples.
