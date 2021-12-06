@@ -5,7 +5,8 @@
 \title{Create Completion}
 \usage{
 create_completion(
-  engine_id,
+  engine_id = NULL,
+  model = NULL,
   best_of = NULL,
   echo = NULL,
   frequency_penalty = NULL,
@@ -24,6 +25,8 @@ create_completion(
 }
 \arguments{
 \item{engine_id}{(string) The ID of the engine to use for this request Required}
+
+\item{model}{(string) A user-created fine-tuned model.}
 
 \item{best_of}{(integer) Generates best_of completions server-side and returns the "best" (the one with the lowest log probability per token). Results cannot be streamed. When used with n, best_of controls the number of candidate completions and n specifies how many to return – best_of must be greater than n. Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop.}
 
