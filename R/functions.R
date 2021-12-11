@@ -513,3 +513,31 @@ list_fine_tune_events <- function(fine_tune_id, stream = NULL, return_response =
 
 
 
+#' Create Embedding - Beta
+#'
+#' Creates an embedding vector representing the input text.
+#'
+#' @param enging_id (string) The ID of the engine to use for this request Required
+#' @param input (string or array) Input text to get embeddings for, encoded as a string or array of tokens. To get embeddings for multiple inputs in a single request, pass and array of strings or array of token arrays. Each input must not exceed 2048 tokens in length.
+#' We suggest replacing newlines ("\n") in your input with a single space, as we have observed inferior results when newlines are present.
+#' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
+#' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/cancel}{Open AI Documentation}
+#' @export
+create_embedding <- function(engine_id, input, return_response = F){
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/embeddings')
+  
+  body <- list(input = input)
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
+}
+
