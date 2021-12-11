@@ -8,21 +8,21 @@
 #' @seealso \href{https://beta.openai.com/docs/api-reference/engines/list}{Open AI Documentation}
 #' @export
 list_engines <- function(return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/engines')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/engines')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -36,21 +36,21 @@ list_engines <- function(return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/engines/retrieve}{Open AI Documentation}
 #' @export
 retrieve_engine <- function(engine_id, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -60,6 +60,7 @@ retrieve_engine <- function(engine_id, return_response = F){
 #' Creates a new completion for the provided prompt and parameters
 #'
 #' @param engine_id (string) The ID of the engine to use for this request Required
+#' @param model (string) A user-created fine-tuned model.
 #' @param best_of (integer) Generates best_of completions server-side and returns the "best" (the one with the lowest log probability per token). Results cannot be streamed. When used with n, best_of controls the number of candidate completions and n specifies how many to return – best_of must be greater than n. Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop. 
 #' @param echo (boolean) Echo back the prompt in addition to the completion 
 #' @param frequency_penalty (number) Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. See more information about frequency and presence penalties. 
@@ -76,23 +77,27 @@ retrieve_engine <- function(engine_id, return_response = F){
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @seealso \href{https://beta.openai.com/docs/api-reference/completions/create}{Open AI Documentation}
 #' @export
-create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_penalty = NULL, logit_bias = NULL, logprobs = NULL, max_tokens = NULL, n = NULL, presence_penalty = NULL, prompt = NULL, stop = NULL, stream = NULL, temperature = NULL, top_p = NULL, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/completions')
-
-	body_params <- c("best_of","echo","frequency_penalty","logit_bias","logprobs","max_tokens","n","presence_penalty","prompt","stop","stream","temperature","top_p")
-	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
-
-	query <- NULL
-
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+create_completion <- function(engine_id = NULL, model = NULL, best_of = NULL, echo = NULL, frequency_penalty = NULL, logit_bias = NULL, logprobs = NULL, max_tokens = NULL, n = NULL, presence_penalty = NULL, prompt = NULL, stop = NULL, stream = NULL, temperature = NULL, top_p = NULL, return_response = F){
+  
+  check_authentication()
+  
+  if(is.null(engine_id)){
+    endpoint_url <- glue::glue('https://api.openai.com/v1/completions')
+  }else{
+    endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/completions')
+  }
+  
+  body_params <- c("best_of","echo","frequency_penalty","logit_bias","logprobs","max_tokens","n","presence_penalty","prompt","stop","stream","temperature","top_p", "model")
+  body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -111,22 +116,22 @@ create_completion <- function(engine_id, best_of = NULL, echo = NULL, frequency_
 #' @seealso \href{https://beta.openai.com/docs/api-reference/searches/create}{Open AI Documentation}
 #' @export
 create_search <- function(engine_id, query, documents = NULL, file = NULL, max_rerank = NULL, return_metadata = NULL, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/search')
-
-	body_params <- c("query","documents","file","max_rerank","return_metadata")
-	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
-
-	query <- NULL
-
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/engines/{engine_id}/search')
+  
+  body_params <- c("query","documents","file","max_rerank","return_metadata")
+  body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -152,22 +157,22 @@ create_search <- function(engine_id, query, documents = NULL, file = NULL, max_r
 #' @seealso \href{https://beta.openai.com/docs/api-reference/classifications/create}{Open AI Documentation}
 #' @export
 create_classification <- function(model, query, examples = NULL, expand = NULL, file = NULL, labels = NULL, logit_bias = NULL, logprobs = NULL, max_examples = NULL, return_metadata = NULL, return_prompt = NULL, search_model = NULL, temperature = NULL, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/classifications')
-
-	body_params <- c("model","query","examples","expand","file","labels","logit_bias","logprobs","max_examples","return_metadata","return_prompt","search_model","temperature")
-	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
-
-	query <- NULL
-
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/classifications')
+  
+  body_params <- c("model","query","examples","expand","file","labels","logit_bias","logprobs","max_examples","return_metadata","return_prompt","search_model","temperature")
+  body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -197,22 +202,22 @@ create_classification <- function(model, query, examples = NULL, expand = NULL, 
 #' @seealso \href{https://beta.openai.com/docs/api-reference/answers/create}{Open AI Documentation}
 #' @export
 create_answer <- function(examples, examples_context, model, question, documents = NULL, expand = NULL, file = NULL, logit_bias = NULL, logprobs = NULL, max_rerank = NULL, max_tokens = NULL, n = NULL, return_metadata = NULL, return_prompt = NULL, search_model = NULL, stop = NULL, temperature = NULL, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/answers')
-
-	body_params <- c("examples","examples_context","model","question","documents","expand","file","logit_bias","logprobs","max_rerank","max_tokens","n","return_metadata","return_prompt","search_model","stop","temperature")
-	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
-
-	query <- NULL
-
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/answers')
+  
+  body_params <- c("examples","examples_context","model","question","documents","expand","file","logit_bias","logprobs","max_rerank","max_tokens","n","return_metadata","return_prompt","search_model","stop","temperature")
+  body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -225,21 +230,21 @@ create_answer <- function(examples, examples_context, model, question, documents
 #' @seealso \href{https://beta.openai.com/docs/api-reference/files/list}{Open AI Documentation}
 #' @export
 list_files <- function(return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/files')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/files')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -248,30 +253,30 @@ list_files <- function(return_response = F){
 #'
 #' Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
 #'
-#' @param file (string) Name of the JSON Lines file to be uploaded. If the purpose is set to "search" or "answers", each line is a JSON record with a "text" field and an optional "metadata" field. Only "text" field will be used for search. Specially, when the purpose is "answers", "\n" is used as a delimiter to chunk contents in the "text" field into multiple documents for finer-grained matching. If the purpose is set to "classifications", each line is a JSON record representing a single training example with "text" and "label" fields along with an optional "metadata" field. If the purpose is set to "fine-tune", each line is a JSON record with "prompt" and "completion" fields representing your training examples. Required
+#' @param file (string) Name of the JSON Lines file to be uploaded. If the purpose is set to "search" or "answers", each line is a JSON record with a "text" field and an optional "metadata" field. Only "text" field will be used for search. Specially, when the purpose is "answers", "\\n" is used as a delimiter to chunk contents in the "text" field into multiple documents for finer-grained matching. If the purpose is set to "classifications", each line is a JSON record representing a single training example with "text" and "label" fields along with an optional "metadata" field. If the purpose is set to "fine-tune", each line is a JSON record with "prompt" and "completion" fields representing your training examples. Required
 #' @param purpose (string) The intended purpose of the uploaded documents. Use "search" for Search, "answers" for Answers, "classifications" for Classifications and "fine-tune" for Fine-tuning. This allows us to validate the format of the uploaded file. Required
 #' @param return_response (boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).
 #' @seealso \href{https://beta.openai.com/docs/api-reference/files/upload}{Open AI Documentation}
 #' @export
 upload_file <- function(file, purpose, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/files')
-
-	body_params <- c("file","purpose")
-	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
-
-	body$file <- httr::upload_file(body$file)
-
-	query <- NULL
-
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/files')
+  
+  body_params <- c("file","purpose")
+  body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
+  
+  body$file <- httr::upload_file(body$file)
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -285,21 +290,21 @@ upload_file <- function(file, purpose, return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/files/delete}{Open AI Documentation}
 #' @export
 delete_file <- function(file_id, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::DELETE(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::DELETE(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -313,21 +318,21 @@ delete_file <- function(file_id, return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/files/retrieve}{Open AI Documentation}
 #' @export
 retrieve_file <- function(file_id, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -341,21 +346,21 @@ retrieve_file <- function(file_id, return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/files/retrieve-content}{Open AI Documentation}
 #' @export
 retrieve_file_content <- function(file_id, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}/content')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/files/{file_id}/content')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -380,22 +385,22 @@ retrieve_file_content <- function(file_id, return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/create}{Open AI Documentation}
 #' @export
 create_fine_tune <- function(training_file, batch_size = NULL, classification_betas = NULL, classification_n_classes = NULL, classification_positive_class = NULL, compute_classification_metrics = NULL, learning_rate_multiplier = NULL, model = NULL, n_epochs = NULL, prompt_loss_weight = NULL, use_packing = NULL, validation_file = NULL, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes')
-
-	body_params <- c("training_file","batch_size","classification_betas","classification_n_classes","classification_positive_class","compute_classification_metrics","learning_rate_multiplier","model","n_epochs","prompt_loss_weight","use_packing","validation_file")
-	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
-
-	query <- NULL
-
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes')
+  
+  body_params <- c("training_file","batch_size","classification_betas","classification_n_classes","classification_positive_class","compute_classification_metrics","learning_rate_multiplier","model","n_epochs","prompt_loss_weight","use_packing","validation_file")
+  body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -408,21 +413,21 @@ create_fine_tune <- function(training_file, batch_size = NULL, classification_be
 #' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/list}{Open AI Documentation}
 #' @export
 list_fine_tunes <- function(return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -436,21 +441,21 @@ list_fine_tunes <- function(return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/retrieve}{Open AI Documentation}
 #' @export
 retrieve_fine_tune <- function(fine_tune_id, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -464,21 +469,21 @@ retrieve_fine_tune <- function(fine_tune_id, return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/cancel}{Open AI Documentation}
 #' @export
 cancel_fine_tune <- function(fine_tune_id, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}/cancel')
-
-	body <- NULL
-
-	query <- NULL
-
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}/cancel')
+  
+  body <- NULL
+  
+  query <- NULL
+  
+  response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
@@ -493,22 +498,22 @@ cancel_fine_tune <- function(fine_tune_id, return_response = F){
 #' @seealso \href{https://beta.openai.com/docs/api-reference/fine-tunes/events}{Open AI Documentation}
 #' @export
 list_fine_tune_events <- function(fine_tune_id, stream = NULL, return_response = F){
-
-	check_authentication()
-
-	endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}/events')
-
-	body <- NULL
-
-	query_params <- c("stream")
-	query <- query_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(query_params) %>% purrr::compact()
-
-	response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
-
-	if(return_response) return(response)
-
-	parse_response(response)
-
+  
+  check_authentication()
+  
+  endpoint_url <- glue::glue('https://api.openai.com/v1/fine-tunes/{fine_tune_id}/events')
+  
+  body <- NULL
+  
+  query_params <- c("stream")
+  query <- query_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(query_params) %>% purrr::compact()
+  
+  response <- httr::GET(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+  
+  if(return_response) return(response)
+  
+  parse_response(response)
+  
 }
 
 
