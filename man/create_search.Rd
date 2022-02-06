@@ -15,7 +15,7 @@ create_search(
 )
 }
 \arguments{
-\item{engine_id}{(string) The ID of the engine to use for this request Required}
+\item{engine_id}{(string) The ID of the engine to use for this request.  You can select one of ada, babbage, curie, or davinci. Required}
 
 \item{query}{(string) Query to search against the documents. Required}
 
