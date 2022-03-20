@@ -18,6 +18,7 @@ create_classification(
   return_prompt = NULL,
   search_model = NULL,
   temperature = NULL,
+  user = NULL,
   return_response = F
 )
 }
@@ -47,6 +48,8 @@ create_classification(
 \item{search_model}{(string) ID of the engine to use for Search. You can select one of ada, babbage, curie, or davinci.}
 
 \item{temperature}{(number) What sampling temperature to use. Higher values mean the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer.}
+
+\item{user}{(string) A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.}
 
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }

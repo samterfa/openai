@@ -17,8 +17,10 @@ create_completion(
   prompt = NULL,
   stop = NULL,
   stream = NULL,
+  suffix = NULL,
   temperature = NULL,
   top_p = NULL,
+  user = NULL,
   return_response = F
 )
 }
@@ -35,7 +37,7 @@ create_completion(
 
 \item{logprobs}{(integer) Include the log probabilities on the logprobs most likely tokens, as well the chosen tokens. For example, if logprobs is 5, the API will return a list of the 5 most likely tokens. The API will always return the logprob of the sampled token, so there may be up to logprobs+1 elements in the response. The maximum value for logprobs is 5. If you need more than this, please contact support@openai.com and describe your use case.}
 
-\item{max_tokens}{(integer) The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length. Most models have a context length of 2048 tokens (except code-davinci-001, which supports 4096).}
+\item{max_tokens}{(integer) The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).}
 
 \item{n}{(integer) How many completions to generate for each prompt. Note: Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for max_tokens and stop.}
 
@@ -47,9 +49,13 @@ create_completion(
 
 \item{stream}{(boolean) Whether to stream back partial progress. If set, tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data: \link{DONE} message.}
 
+\item{suffix}{(string or array) The suffix that comes after a completion of inserted text, encoded as a string or array of strings.}
+
 \item{temperature}{(number) What sampling temperature to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. We generally recommend altering this or top_p but not both.}
 
 \item{top_p}{(number) An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10\% probability mass are considered. We generally recommend altering this or temperature but not both.}
+
+\item{user}{(string) A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.}
 
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }

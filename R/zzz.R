@@ -14,10 +14,11 @@ parse_response <- function(response){
   response_content
 }
 
-parse_endpoints <- function(){
+# Download html manually from https://beta.openai.com/docs/api-reference/introduction
+parse_endpoints <- function(documentation_path = 'data/API Reference - OpenAI API.html'){
   
   endpoints <-
-    rvest::read_html('data/API Reference - OpenAI API.html') %>% 
+    rvest::read_html(documentation_path) %>% 
     rvest::html_elements('.endpoint')
   
   endpoints_df <- tibble::tibble()

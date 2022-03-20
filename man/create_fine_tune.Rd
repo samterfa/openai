@@ -15,6 +15,7 @@ create_fine_tune(
   model = NULL,
   n_epochs = NULL,
   prompt_loss_weight = NULL,
+  suffix = NULL,
   validation_file = NULL,
   return_response = F
 )
@@ -39,6 +40,8 @@ create_fine_tune(
 \item{n_epochs}{(integer) The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.}
 
 \item{prompt_loss_weight}{(number) The weight to use for loss on the prompt tokens. This controls how much the model tries to learn to generate the prompt (as compared to the completion which always has a weight of 1.0), and can add a stabilizing effect to training when completions are short. If prompts are extremely long (relative to completions), it may make sense to reduce this weight so as to avoid over-prioritizing learning the prompt.}
+
+\item{suffix}{(string) A string of up to 40 characters that will be added to your fine-tuned model name. For example, a suffix of "custom-model-name" would produce a model name like ada:ft-your-org:custom-model-name-2022-02-15-04-21-04.}
 
 \item{validation_file}{(string) The ID of an uploaded file that contains validation data. If you provide this file, the data is used to generate validation metrics periodically during fine-tuning. These metrics can be viewed in the fine-tuning results file. Your train and validation data should be mutually exclusive. Your dataset must be formatted as a JSONL file, where each validation example is a JSON object with the keys "prompt" and "completion". Additionally, you must upload your file with the purpose fine-tune. See the fine-tuning guide for more details.}
 
