@@ -4,14 +4,14 @@
 \alias{create_embeddings}
 \title{Create Embeddings}
 \usage{
-create_embeddings(engine_id, input, user = NULL, return_response = F)
+create_embeddings(input, model, user = NULL, return_response = F)
 }
 \arguments{
-\item{engine_id}{(string) The ID of the engine to use for this request Required}
+\item{input}{(string or array) Input text to get embeddings for, encoded as a string or array of tokens. To get embeddings for multiple inputs in a single request, pass an array of strings or array of token arrays. Each input must not exceed 2048 tokens in length. Unless you are embedding code, we suggest replacing newlines (\n) in your input with a single space, as we have observed inferior results when newlines are present. Required}
 
-\item{input}{(string or array) Input text to get embeddings for, encoded as a string or array of tokens. To get embeddings for multiple inputs in a single request, pass an array of strings or array of token arrays. Each input must not exceed 2048 tokens in length. Unless your are embedding code, we suggest replacing newlines (\n) in your input with a single space, as we have observed inferior results when newlines are present. Required}
+\item{model}{(string) ID of the model to use. You can use the List models API to see all of your available models, or see our Model overview for descriptions of them. Required}
 
-\item{user}{(string) A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.}
+\item{user}{(string) A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. Learn more.}
 
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }

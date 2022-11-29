@@ -7,9 +7,9 @@
 upload_file(file, purpose, return_response = F)
 }
 \arguments{
-\item{file}{(string) Name of the JSON Lines file to be uploaded. If the purpose is set to "search" or "answers", each line is a JSON record with a "text" field and an optional "metadata" field. Only "text" field will be used for search. Specially, when the purpose is "answers", "\n" is used as a delimiter to chunk contents in the "text" field into multiple documents for finer-grained matching. If the purpose is set to "classifications", each line is a JSON record representing a single training example with "text" and "label" fields along with an optional "metadata" field. If the purpose is set to "fine-tune", each line is a JSON record with "prompt" and "completion" fields representing your training examples. Required}
+\item{file}{(string) Name of the JSON Lines file to be uploaded. If the purpose is set to "fine-tune", each line is a JSON record with "prompt" and "completion" fields representing your training examples. Required}
 
-\item{purpose}{(string) The intended purpose of the uploaded documents. Use "search" for Search, "answers" for Answers, "classifications" for Classifications and "fine-tune" for Fine-tuning. This allows us to validate the format of the uploaded file. Required}
+\item{purpose}{(string) The intended purpose of the uploaded documents. Use "fine-tune" for Fine-tuning. This allows us to validate the format of the uploaded file. Required}
 
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }

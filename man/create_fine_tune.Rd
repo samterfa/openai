@@ -35,7 +35,7 @@ create_fine_tune(
 
 \item{learning_rate_multiplier}{(number) The learning rate multiplier to use for training. The fine-tuning learning rate is the original learning rate used for pretraining multiplied by this value. By default, the learning rate multiplier is the 0.05, 0.1, or 0.2 depending on final batch_size (larger learning rates tend to perform better with larger batch sizes). We recommend experimenting with values in the range 0.02 to 0.2 to see what produces the best results.}
 
-\item{model}{(string) The name of the base model to fine-tune. You can select one of "ada", "babbage", "curie", or "davinci". To learn more about these models, see the Engines documentation.}
+\item{model}{(string) The name of the base model to fine-tune. You can select one of "ada", "babbage", "curie", "davinci", or a fine-tuned model created after 2022-04-21. To learn more about these models, see the Models documentation.}
 
 \item{n_epochs}{(integer) The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.}
 

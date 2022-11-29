@@ -5,20 +5,23 @@
 \title{Create Edit}
 \usage{
 create_edit(
-  engine_id,
   instruction,
+  model,
   input = NULL,
+  n = NULL,
   temperature = NULL,
   top_p = NULL,
   return_response = F
 )
 }
 \arguments{
-\item{engine_id}{(string) The ID of the engine to use for this request Required}
-
 \item{instruction}{(string) The instruction that tells the model how to edit the prompt. Required}
 
+\item{model}{(string) ID of the model to use. You can use the List models API to see all of your available models, or see our Model overview for descriptions of them. Required}
+
 \item{input}{(string) The input text to use as a starting point for the edit.}
+
+\item{n}{(integer) How many edits to generate for the input and instruction.}
 
 \item{temperature}{(number) What sampling temperature to use. Higher values means the model will take more risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones with a well-defined answer. We generally recommend altering this or top_p but not both.}
 

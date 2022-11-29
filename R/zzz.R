@@ -15,7 +15,7 @@ parse_response <- function(response){
 }
 
 # Download html manually from https://beta.openai.com/docs/api-reference/introduction
-parse_endpoints <- function(documentation_path = 'data/API Reference - OpenAI API.html'){
+parse_endpoints <- function(documentation_path = '~/API Reference - OpenAI API.html'){
   
   endpoints <-
     rvest::read_html(documentation_path) %>% 
@@ -315,7 +315,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
       function_text <-
         paste0(function_text,
                glue::glue("\tbody_params <- c({paste0('\"', paste(body_params$param_name, collapse = '\",\"'), '\"')})\n", .trim = F),
-               glue::glue("\tbody <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(body_params) %>% purrr::compact()\n\n", .trim = F))
+               glue::glue("\tbody <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% stats::setNames(body_params) %>% purrr::compact()\n\n", .trim = F))
     }else{
       function_text <-
         paste0(function_text,
@@ -334,7 +334,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
       function_text <-
         paste0(function_text,
                glue::glue("\tquery_params <- c({paste0('\"', paste(query_params$param_name, collapse = '\",\"'), '\"')})\n", .trim = F),
-               glue::glue("\tquery <- query_params %>% purrr::map(~ eval(parse(text = .x))) %>% setNames(query_params) %>% purrr::compact()\n\n", .trim = F))
+               glue::glue("\tquery <- query_params %>% purrr::map(~ eval(parse(text = .x))) %>% stats::setNames(query_params) %>% purrr::compact()\n\n", .trim = F))
     }else{
       function_text <-
         paste0(function_text,
@@ -368,7 +368,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
   
   readr::write_lines(function_text, output_path, append = F)
   
-  file.edit(output_path)
+  utils::file.edit(output_path)
   
   invisible()
 }
