@@ -31,7 +31,7 @@ devtools::install_github("samterfa/openai")
 
 ## Set Up
 
-Access to the API is still limited and must be [requested](https://openai.com/join/). Once granted, API calls are authenticated using your [API keys](https://beta.openai.com/account/api-keys). The environment variables set below are consulted while making each call.
+API calls are authenticated using your [API keys](https://beta.openai.com/account/api-keys). The environment variables set below are consulted while making each call.
 
 ```{r, eval=F}
 Sys.setenv(openai_organization_id = {your_organization_id})
@@ -42,13 +42,13 @@ More details on authentication can be found [here](https://beta.openai.com/docs/
 
 ## Examples
 
-Retrieve the currently available engines used to generate text.
+Retrieve the currently available models used to generate text.
 
 ```{r}
 library(openai)
 library(purrr)
 
-list_engines() %>% 
+list_models() %>% 
   pluck('data') %>% 
   map_dfr(compact)
 ```
@@ -57,7 +57,7 @@ Create a completion request using the davinci engine.
 
 ```{r}
 create_completion(
-  engine_id = 'davinci', 
+  model = 'davinci', 
   max_tokens = 5,
   temperature = 1,
   top_p = 1,
@@ -68,36 +68,13 @@ create_completion(
   map_chr(~ .x$text)
 ```
 
-Classify a query based on provided examples.
+Generate an image based on a prompt.
 
 ```{r}
-create_classification(
-  query = "It is a rainy day :(", 
-  examples = 
-    list(
-      list("A happy moment", "Positive"), 
-      list("I am sad.", "Negative"), 
-      list("I am feeling awesome", "Positive")), 
-  labels = c('Positive', 'Negative', 'Neutral'), 
-  search_model = 'ada', 
-  model = 'curie') %>%
-  pluck('label')
-```
-
-Answer a question based on context and provided documents.
-
-```{r}
-create_answer(
-  documents = list("Puppy A is happy.", "Puppy B is sad."),
-  question = "which puppy is happy?",
-  examples_context = "In 2017, U.S. life expectancy was 78.6 years.",
-  examples = list(list("What is human life expectancy in the United States?","78 years.")),
-  search_model = 'ada', 
-  model = 'curie',
-  max_tokens = 5
-) %>%
-  pluck('answers') %>%
-  pluck(1)
+create_image(
+  prompt = "A rollerskating zebra", 
+  n = 1, 
+  response_format = "url")
 ```
 
 
