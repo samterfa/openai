@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{list_fine_tune_events}
 \alias{list_fine_tune_events}
-\title{List Fine-Tune Events - Beta}
+\title{List Fine-Tune Events}
 \usage{
 list_fine_tune_events(fine_tune_id, stream = NULL, return_response = F)
 }
@@ -17,5 +17,5 @@ list_fine_tune_events(fine_tune_id, stream = NULL, return_response = F)
 Get fine-grained status updates for a fine-tune job.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/fine-tunes/events}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/fine-tunes/events}{Open AI Documentation}
 }

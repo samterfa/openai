@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{delete_fine_tune_model}
 \alias{delete_fine_tune_model}
-\title{Delete Fine-Tune Model - Beta}
+\title{Delete Fine-Tune Model}
 \usage{
 delete_fine_tune_model(model, return_response = F)
 }
@@ -15,5 +15,5 @@ delete_fine_tune_model(model, return_response = F)
 Delete a fine-tuned model. You must have the Owner role in your organization.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/fine-tunes/delete-model}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/fine-tunes/delete-model}{Open AI Documentation}
 }

@@ -15,5 +15,5 @@ retrieve_enginedeprecated(engine_id, return_response = F)
 Retrieves a model instance, providing basic information about it such as the owner and availability.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/engines/retrieve}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/engines/retrieve}{Open AI Documentation}
 }

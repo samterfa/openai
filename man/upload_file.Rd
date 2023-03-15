@@ -17,5 +17,5 @@ upload_file(file, purpose, return_response = F)
 Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/files/upload}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/files/upload}{Open AI Documentation}
 }

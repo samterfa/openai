@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{cancel_fine_tune}
 \alias{cancel_fine_tune}
-\title{Cancel Fine-Tune - Beta}
+\title{Cancel Fine-Tune}
 \usage{
 cancel_fine_tune(fine_tune_id, return_response = F)
 }
@@ -15,5 +15,5 @@ cancel_fine_tune(fine_tune_id, return_response = F)
 Immediately cancel a fine-tune job.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/fine-tunes/cancel}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/fine-tunes/cancel}{Open AI Documentation}
 }

@@ -15,5 +15,5 @@ retrieve_file(file_id, return_response = F)
 Returns information about a specific file.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/files/retrieve}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/files/retrieve}{Open AI Documentation}
 }

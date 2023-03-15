@@ -17,5 +17,5 @@ create_moderation(input, model = NULL, return_response = F)
 Classifies if text violates OpenAI's Content Policy
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/moderations/create}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/moderations/create}{Open AI Documentation}
 }

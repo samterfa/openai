@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_fine_tune}
 \alias{create_fine_tune}
-\title{Create Fine-Tune - Beta}
+\title{Create Fine-Tune}
 \usage{
 create_fine_tune(
   training_file,
@@ -51,5 +51,5 @@ create_fine_tune(
 Creates a job that fine-tunes a specified model from a given dataset.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/fine-tunes/create}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/fine-tunes/create}{Open AI Documentation}
 }

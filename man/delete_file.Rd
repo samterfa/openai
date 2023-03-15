@@ -15,5 +15,5 @@ delete_file(file_id, return_response = F)
 Delete a file.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/files/delete}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/files/delete}{Open AI Documentation}
 }

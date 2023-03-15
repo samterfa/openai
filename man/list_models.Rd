@@ -13,5 +13,5 @@ list_models(return_response = F)
 Lists the currently available models, and provides basic information about each one such as the owner and availability.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/models/list}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/models/list}{Open AI Documentation}
 }

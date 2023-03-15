@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_image_edit}
 \alias{create_image_edit}
-\title{Create Image Edit}
+\title{Create Image Edit - Beta}
 \usage{
 create_image_edit(
   image,
@@ -36,5 +36,5 @@ create_image_edit(
 Creates an edited or extended image given an original image and a prompt.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/images/create-edit}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/images/create-edit}{Open AI Documentation}
 }

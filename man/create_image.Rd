@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_image}
 \alias{create_image}
-\title{Create Image}
+\title{Create Image - Beta}
 \usage{
 create_image(
   prompt,
@@ -30,5 +30,5 @@ create_image(
 Creates an image given a prompt.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/images/create}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/images/create}{Open AI Documentation}
 }

@@ -13,5 +13,5 @@ list_files(return_response = F)
 Returns a list of files that belong to the user's organization.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/files/list}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/files/list}{Open AI Documentation}
 }

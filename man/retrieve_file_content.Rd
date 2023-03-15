@@ -15,5 +15,5 @@ retrieve_file_content(file_id, return_response = F)
 Returns the contents of the specified file
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/files/retrieve-content}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/files/retrieve-content}{Open AI Documentation}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_image_variation}
 \alias{create_image_variation}
-\title{Create Image Variation}
+\title{Create Image Variation - Beta}
 \usage{
 create_image_variation(
   image,
@@ -30,5 +30,5 @@ create_image_variation(
 Creates a variation of a given image.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/images/create-variation}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/images/create-variation}{Open AI Documentation}
 }

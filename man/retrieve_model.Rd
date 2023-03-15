@@ -15,5 +15,5 @@ retrieve_model(model, return_response = F)
 Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/models/retrieve}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/models/retrieve}{Open AI Documentation}
 }

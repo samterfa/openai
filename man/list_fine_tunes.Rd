@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{list_fine_tunes}
 \alias{list_fine_tunes}
-\title{List Fine-Tunes - Beta}
+\title{List Fine-Tunes}
 \usage{
 list_fine_tunes(return_response = F)
 }
@@ -13,5 +13,5 @@ list_fine_tunes(return_response = F)
 List your organization's fine-tuning jobs
 }
 \seealso{
-\href{https://beta.openai.com/docs/api-reference/fine-tunes/list}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/fine-tunes/list}{Open AI Documentation}
 }
