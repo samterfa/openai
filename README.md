@@ -21,9 +21,7 @@ devtools::install_github("samterfa/openai")
 
 ## Set Up
 
-Access to the API is still limited and must be
-[requested](https://openai.com/join/). Once granted, API calls are
-authenticated using your [API
+API calls are authenticated using your [API
 keys](https://beta.openai.com/account/api-keys). The environment
 variables set below are consulted while making each call.
 
@@ -33,36 +31,40 @@ Sys.setenv(openai_secret_key = {your_secret_key})
 ```
 
 More details on authentication can be found
-[here](https://beta.openai.com/docs/api-reference/authentication).
+[here](https://platform.openai.com/docs/api-reference/authentication).
 
 ## Examples
 
-Retrieve the currently available engines used to generate text.
+Retrieve the currently available models used to generate text.
 
 ``` r
 library(openai)
 library(purrr)
 
-list_engines() %>% 
+list_models() %>% 
   pluck('data') %>% 
   map_dfr(compact)
-#> # A tibble: 7 × 4
-#>   id                       object owner  ready
-#>   <chr>                    <chr>  <chr>  <lgl>
-#> 1 ada                      engine openai TRUE 
-#> 2 babbage                  engine openai TRUE 
-#> 3 curie                    engine openai TRUE 
-#> 4 curie-instruct-beta      engine openai TRUE 
-#> 5 davinci                  engine openai TRUE 
-#> 6 davinci-instruct-beta    engine openai TRUE 
-#> 7 davinci-instruct-beta-v3 engine openai TRUE
+#> # A tibble: 70 × 7
+#>    id                          object created owned_by permission   root  parent
+#>    <chr>                       <chr>    <int> <chr>    <list>       <chr> <chr> 
+#>  1 babbage                     model   1.65e9 openai   <named list> babb… <NA>  
+#>  2 davinci                     model   1.65e9 openai   <named list> davi… <NA>  
+#>  3 babbage-code-search-code    model   1.65e9 openai-… <named list> babb… <NA>  
+#>  4 text-similarity-babbage-001 model   1.65e9 openai-… <named list> text… <NA>  
+#>  5 text-davinci-001            model   1.65e9 openai   <named list> text… <NA>  
+#>  6 ada                         model   1.65e9 openai   <named list> ada   <NA>  
+#>  7 curie-instruct-beta         model   1.65e9 openai   <named list> curi… <NA>  
+#>  8 babbage-code-search-text    model   1.65e9 openai-… <named list> babb… <NA>  
+#>  9 babbage-similarity          model   1.65e9 openai-… <named list> babb… <NA>  
+#> 10 gpt-3.5-turbo               model   1.68e9 openai   <named list> gpt-… <NA>  
+#> # … with 60 more rows
 ```
 
 Create a completion request using the davinci engine.
 
 ``` r
 create_completion(
-  engine_id = 'davinci', 
+  model = 'davinci', 
   max_tokens = 5,
   temperature = 1,
   top_p = 1,
@@ -71,39 +73,21 @@ create_completion(
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)
-#> [1] ", I owned this beautiful"
+#> [1] ", the great Earthmother"
 ```
 
-Classify a query based on provided examples.
+Generate an image based on a prompt.
 
 ``` r
-create_classification(
-  query = "It is a rainy day :(", 
-  examples = 
-    list(
-      list("A happy moment", "Positive"), 
-      list("I am sad.", "Negative"), 
-      list("I am feeling awesome", "Positive")), 
-  labels = c('Positive', 'Negative', 'Neutral'), 
-  search_model = 'ada', 
-  model = 'curie') %>%
-  pluck('label')
-#> [1] "Negative"
-```
-
-Answer a question based on context and provided documents.
-
-``` r
-create_answer(
-  documents = list("Puppy A is happy.", "Puppy B is sad."),
-  question = "which puppy is happy?",
-  examples_context = "In 2017, U.S. life expectancy was 78.6 years.",
-  examples = list(list("What is human life expectancy in the United States?","78 years.")),
-  search_model = 'ada', 
-  model = 'curie',
-  max_tokens = 5
-) %>%
-  pluck('answers') %>%
-  pluck(1)
-#> [1] "puppy A."
+create_image(
+  prompt = "A rollerskating zebra", 
+  n = 1, 
+  response_format = "url")
+#> $created
+#> [1] 1679202829
+#> 
+#> $data
+#> $data[[1]]
+#> $data[[1]]$url
+#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-SLVUgIvRFpsGIene3sQp3VA6.png?st=2023-03-19T04%3A13%3A49Z&se=2023-03-19T06%3A13%3A49Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-19T03%3A24%3A03Z&ske=2023-03-20T03%3A24%3A03Z&sks=b&skv=2021-08-06&sig=0h69fT%2B5%2BzElx4MpNlYr7w9xr8Himzfy0tRVtjQy/Bs%3D"
 ```

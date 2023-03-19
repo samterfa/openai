@@ -38,7 +38,7 @@ Sys.setenv(openai_organization_id = {your_organization_id})
 Sys.setenv(openai_secret_key = {your_secret_key})
 ```
 
-More details on authentication can be found [here](https://beta.openai.com/docs/api-reference/authentication).
+More details on authentication can be found [here](https://platform.openai.com/docs/api-reference/authentication).
 
 ## Examples
 
