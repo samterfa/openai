@@ -65,15 +65,15 @@ Create a completion request using the davinci engine.
 ``` r
 create_completion(
   model = 'davinci', 
-  max_tokens = 5,
-  temperature = 1,
+  max_tokens = 30,
+  temperature = .5,
   top_p = 1,
   n = 1,
   stream = F, 
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)
-#> [1] ",\n\nNot too"
+#> [1] ", when I was a kid, I used to play this game on the old Apple II computer. It was a text adventure game, and the goal"
 ```
 
 Generate an image based on a prompt.
@@ -84,12 +84,12 @@ create_image(
   n = 1, 
   response_format = "url")
 #> $created
-#> [1] 1679238977
+#> [1] 1679239172
 #> 
 #> $data
 #> $data[[1]]
 #> $data[[1]]$url
-#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-fmtNY78UEoOaCylT94YmatfI.png?st=2023-03-19T14%3A16%3A17Z&se=2023-03-19T16%3A16%3A17Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-19T13%3A37%3A55Z&ske=2023-03-20T13%3A37%3A55Z&sks=b&skv=2021-08-06&sig=7MyH6D4%2BstHOm3VR13hbvOKouz3HlbhTPUsah%2BnOoaE%3D"
+#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-8Kvth8NNoHAzdV9OcFnbFgsV.png?st=2023-03-19T14%3A19%3A32Z&se=2023-03-19T16%3A19%3A32Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-19T13%3A44%3A34Z&ske=2023-03-20T13%3A44%3A34Z&sks=b&skv=2021-08-06&sig=spR0XL8LW55T8MpX61NQjIqReIcJYZJ/DN4zCwM1vs0%3D"
 ```
 
 Use the included addin to code collaboratively with a model.

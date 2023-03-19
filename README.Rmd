@@ -58,8 +58,8 @@ Create a completion request using the davinci engine.
 ```{r}
 create_completion(
   model = 'davinci', 
-  max_tokens = 5,
-  temperature = 1,
+  max_tokens = 30,
+  temperature = .5,
   top_p = 1,
   n = 1,
   stream = F, 
