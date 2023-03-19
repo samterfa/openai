@@ -73,7 +73,7 @@ create_completion(
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)
-#> [1] ", the great Earthmother"
+#> [1] ", a million years ago"
 ```
 
 Generate an image based on a prompt.
@@ -84,10 +84,14 @@ create_image(
   n = 1, 
   response_format = "url")
 #> $created
-#> [1] 1679202829
+#> [1] 1679237401
 #> 
 #> $data
 #> $data[[1]]
 #> $data[[1]]$url
-#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-SLVUgIvRFpsGIene3sQp3VA6.png?st=2023-03-19T04%3A13%3A49Z&se=2023-03-19T06%3A13%3A49Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-19T03%3A24%3A03Z&ske=2023-03-20T03%3A24%3A03Z&sks=b&skv=2021-08-06&sig=0h69fT%2B5%2BzElx4MpNlYr7w9xr8Himzfy0tRVtjQy/Bs%3D"
+#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-OrB7bqvviivitTuuF2oM1KMO.png?st=2023-03-19T13%3A50%3A01Z&se=2023-03-19T15%3A50%3A01Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-19T14%3A34%3A41Z&ske=2023-03-20T14%3A34%3A41Z&sks=b&skv=2021-08-06&sig=CORwrEynGrkfYA2WK9PLoNAbI8%2BBkRSoXaBiGt8frRk%3D"
 ```
+
+Use the included addin to code collaboratively with a model.
+
+![View Demo](https://youtu.be/8jGkLRZ7KDw)
