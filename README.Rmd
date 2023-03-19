@@ -79,5 +79,5 @@ create_image(
 
 Use the included addin to code collaboratively with a model.
 
-![View Demo](https://youtu.be/8jGkLRZ7KDw)
+![Demo](openai RStudio demo.gif)
 
