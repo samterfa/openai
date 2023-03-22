@@ -11,7 +11,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
   
   if(!exists('openai_completions') | reset){
     
-    bonus_prompt <- paste(prompt, 'For the rest of this conversation, return R code only. Do not include anything else including extra characters or comments.')
+    bonus_prompt <- paste('You are an R coding assistant.', prompt, 'For the rest of this conversation, return R code only. Do not include anything else such as extra characters or comments.')
     
     openai_completions <<-
       list(
