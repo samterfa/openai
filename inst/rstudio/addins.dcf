@@ -3,3 +3,10 @@ Name: Autocomplete R Code
 Description: Autocompletes R code
 Binding: autocomplete_r_code
 Interactive: false
+
+
+
+Name: GPT Voice Command
+Description: Uses voice commands to send prompts to GPT models
+Binding: gpt_voice_command
+Interactive: false

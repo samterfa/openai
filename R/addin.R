@@ -1,4 +1,7 @@
 
+gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
+gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '', 4096, Sys.getenv('openai_addin_model_max_tokens'))
+
 autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$contents, debug = FALSE, reset = FALSE){
   
   if(debug) message('Started...')
@@ -50,9 +53,9 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
   resp <- 
     openai::create_chat_completion(
       messages = openai_completions, 
-      model = 'gpt-3.5-turbo', 
+      model = gpt_model, 
       n = 1,
-      max_tokens = 4096 - openai_completions_usage - 1, 
+      max_tokens = gpt_max_tokens - openai_completions_usage - 1, 
       stream = F, 
       return_response = TRUE)
   
@@ -100,4 +103,74 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     
     stop(httr::content(resp))
   }
+}
+
+
+stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buffer = .2){
+  
+  chunk_txt <- ''
+  processed_rows <- integer()
+  
+  callback <- function(x){
+    
+    chunk_txt <<- paste0(chunk_txt, rawToChar(x))
+    
+    chunk_df <<- chunk_txt %>% stringr::str_extract_all('data: .*]\\}\n\n') %>% purrr::pluck(1) %>% stringr::str_remove('^data: ') %>% purrr::map(jsonlite::fromJSON) %>% dplyr::bind_rows() %>% dplyr::mutate(row = dplyr::row_number())
+    
+    to_process <- chunk_df %>% dplyr::filter(!row %in% processed_rows)
+    
+    processed_rows <<- chunk_df %>% dplyr::pull(row)
+    
+    if('choices' %in% names(to_process)) to_process <- to_process %>% tidyr::unnest(choices)
+    if('delta' %in% names(to_process)) to_process <- to_process %>% tidyr::unnest(delta)
+    if('content' %in% names(to_process)) cat(to_process$content %>% na.omit() %>% paste(collapse = ''))
+    
+    TRUE
+  }
+  
+  cat("\014")
+  
+  results <- 
+    httr2::request('https://api.openai.com/v1/chat/completions') %>% 
+    httr2::req_body_json(list(messages = 
+                                list(
+                                  list(role = 'user', 
+                                       content = prompt
+                                  )
+                                ), 
+                              max_tokens = max_tokens, 
+                              model = gpt_model, 
+                              stream = TRUE)) %>% 
+    httr2::req_auth_bearer_token(token = Sys.getenv('openai_secret_key')) %>% 
+    httr2::req_stream(callback, buffer_kb = stream_buffer)
+  
+  invisible()
+}
+
+gpt_voice_command <- function(time_out = 10, sample_rate = 8000, file_path = '~/gpt_voice_commands.wav', auto_execute = FALSE, debug = FALSE){
+  
+  if(!require('audio')) stop('You must install the "audio" package to use this addin.')
+  
+  file_path <- 
+    path.expand(file_path)
+  
+  x <- rep(NA_real_, sample_rate * time_out)
+  
+  cat("\014")
+  
+  message("Listening. Press return when finished.")
+  
+  audio::record(x, sample_rate, 1)
+  
+  R.utils::withTimeout(readline(''), timeout = time_out, onTimeout = "silent")
+  
+  cat("\014")
+  
+  audio::save.wave(what = x %>% na.omit(), 
+                   where = file_path)
+  
+  voice_text <-
+    openai::create_transcription(file_path, 'whisper-1')$text
+  
+  stream_autocompletion_testing(voice_text)
 }
