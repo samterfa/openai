@@ -105,9 +105,9 @@ parse_endpoints <- function(documentation_path = '~/API Reference - OpenAI API.h
           rvest::html_text()
         
         if(is.na(param_required)){
-          param_required <- F
+          param_required <- FALSE
         }else{
-          param_required <- T
+          param_required <- TRUE
         }
         
         param_description <-
@@ -323,7 +323,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     }
     
     # Facilitate uploading files
-    if(function_name == 'upload_file'){
+    if('file' %in% body_params$param_name){ #####function_name == 'upload_file'){
       function_text <-
         paste0(function_text,
                "\tbody$file <- httr::upload_file(body$file)\n\n")
@@ -342,7 +342,7 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
     }
     
     # Facilitate uploading files
-    if(function_name == 'upload_file'){
+    if('file' %in% body_params$param_name){ ###if(function_name == 'upload_file'){
       function_text <-
         paste0(function_text,
                glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))

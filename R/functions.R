@@ -327,9 +327,11 @@ create_transcription <- function(file, model, language = NULL, prompt = NULL, re
 	body_params <- c("file","model","language","prompt","response_format","temperature")
 	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% stats::setNames(body_params) %>% purrr::compact()
 
+	body$file <- httr::upload_file(body$file)
+
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
@@ -360,9 +362,11 @@ create_translation <- function(file, model, prompt = NULL, response_format = NUL
 	body_params <- c("file","model","prompt","response_format","temperature")
 	body <- body_params %>% purrr::map(~ eval(parse(text = .x))) %>% stats::setNames(body_params) %>% purrr::compact()
 
+	body$file <- httr::upload_file(body$file)
+
 	query <- NULL
 
-	response <- httr::POST(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
+	response <- httr::POST(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv("openai_organization_id"), Authorization = glue::glue('Bearer {Sys.getenv("openai_secret_key")}')))
 
 	if(return_response) return(response)
 
