@@ -140,7 +140,7 @@ stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buff
 
 gpt_voice_command <- function(time_out = 10, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = FALSE, debug = FALSE){
   
-  if(!require('audio')) stop('You must install the "audio" package to use this addin.')
+  if(!require('audio2', quietly = TRUE)) stop('You must install the "audio" package to use this addin.')
   
   file_path <- 
     path.expand(file_path)
