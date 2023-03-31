@@ -138,6 +138,12 @@ stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buff
     httr2::req_auth_bearer_token(token = Sys.getenv('openai_secret_key')) %>% 
     httr2::req_stream(callback, buffer_kb = stream_buffer)
   
+  suppressWarnings({
+    rm(chunk_txt)
+    rm(chunk_df)
+    rm(processed_rows)
+  })
+  
   invisible()
 }
 
