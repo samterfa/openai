@@ -95,3 +95,5 @@ create_image(
 Use the included addin to code collaboratively with a model.
 
 ![](openai%20RStudio%20demo.gif)
+
+Access it via the Addins menu, or by Tools -> Addins -> Browse Addins. Search for "openai". 
