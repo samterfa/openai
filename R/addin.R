@@ -99,6 +99,9 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
 
 stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buffer = .2){
   
+  gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
+  gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
+  
   chunk_txt <- ''
   processed_rows <- integer()
   
@@ -140,6 +143,9 @@ stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buff
 
 gpt_voice_command <- function(time_out = 10, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = FALSE, debug = FALSE){
   
+  gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
+  gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
+  
   if(!require('audio', quietly = TRUE)) stop('You must install the "audio" package to use this addin.')
   
   file_path <- 
@@ -163,9 +169,45 @@ gpt_voice_command <- function(time_out = 10, sample_rate = 8000, file_path = tem
   voice_text <-
     openai::create_transcription(file_path, 'whisper-1')$text
   
-  ###### stream_autocompletion_testing(voice_text)
+  if(auto_execute){
+    autocomplete_r_code(prompt = voice_text, debug = FALSE)
+  }else{
+    stream_autocompletion_testing(voice_text)
+  }
   
-  autocomplete_r_code(prompt = voice_text, debug = FALSE)
+  invisible()
+}
+
+gpt_voice_command_exec <- function(time_out = 10, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = TRUE, debug = FALSE){
+  
+  if(!require('audio', quietly = TRUE)) stop('You must install the "audio" package to use this addin.')
+  
+  file_path <- 
+    path.expand(file_path)
+  
+  x <- rep(NA_real_, sample_rate * time_out)
+  
+  cat("\014")
+  
+  message("Listening. Press return when finished.")
+  
+  audio::record(x, sample_rate, 1)
+  
+  R.utils::withTimeout(readline(''), timeout = time_out, onTimeout = "silent")
+  
+  cat("\014")
+  
+  audio::save.wave(what = x %>% na.omit(), 
+                   where = file_path)
+  
+  voice_text <-
+    openai::create_transcription(file_path, 'whisper-1')$text
+  
+  if(auto_execute){
+    autocomplete_r_code(prompt = voice_text, debug = FALSE)
+  }else{
+    stream_autocompletion_testing(voice_text)
+  }
   
   invisible()
 }

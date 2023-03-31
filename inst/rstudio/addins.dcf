@@ -1,12 +1,15 @@
 
-Name: Autocomplete R Code
-Description: Autocompletes R code
+Name: GPT Text Command Auto-Execute
+Description: Sends console text input to GPT models. Results are automatically executed in the console.
 Binding: autocomplete_r_code
 Interactive: false
 
-
-
 Name: GPT Voice Command
-Description: Uses voice commands to send prompts to GPT models
+Description: Uses voice commands to send prompts to GPT models. Results are displayed but not executed.
 Binding: gpt_voice_command
+Interactive: false
+
+Name: GPT Voice Command Auto-Execute
+Description: Uses voice commands to send prompts to GPT models. Results are automatically executed in the console.
+Binding: gpt_voice_command_exec
 Interactive: false
