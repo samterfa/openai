@@ -1,8 +1,8 @@
 
-gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
-gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '', 4096, Sys.getenv('openai_addin_model_max_tokens'))
-
 autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$contents, debug = FALSE, reset = FALSE){
+  
+  gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
+  gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
   
   if(debug) message('Started...')
   
@@ -47,7 +47,6 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
   total_request_chars <-
     openai_completions %>% purrr::keep(~ .x$role == 'user') %>% purrr::map_chr(~ .x$content) %>% paste(collapse = '') %>% nchar()
   
-  
   if(debug) message('Making request...')
   
   resp <- 
@@ -75,20 +74,10 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     
     openai_completions_usage <<- completion$usage$total_tokens # Could be completion_tokens or prompt_tokens also.
     
-    # completion <- 
-    #   openai::create_completion(prompt = prompt, 
-    #                             model = 'gpt-3.5-turbo', 
-    #                             best_of = 1, 
-    #                             top_p = 1,
-    #                             frequency_penalty = 0,
-    #                             presence_penalty = 0,
-    #                             temperature = 1,
-    #                             echo = T, 
-    #                             max_tokens = 4096 - nchar(prompt), 
-    #                             stream = F)$choices[[1]]$text
-    
     cat("\014")
-    rstudioapi::sendToConsole(code = paste0(prompt, completion$choices[[1]]$message$content) %>% 
+    
+    # code = prompt, ...
+    rstudioapi::sendToConsole(code = paste0(completion$choices[[1]]$message$content) %>% 
                                 stringr::str_remove('^\n') %>% stringr::str_remove('^R') %>% stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% str_remove_all('\\`\\`\\`') %>% str_trim(side = 'left'))
     rstudioapi::sendToConsole("", execute = FALSE, echo = TRUE)
   }else{
@@ -103,6 +92,8 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     
     stop(httr::content(resp))
   }
+  
+  invisible()
 }
 
 
@@ -172,5 +163,9 @@ gpt_voice_command <- function(time_out = 10, sample_rate = 8000, file_path = '~/
   voice_text <-
     openai::create_transcription(file_path, 'whisper-1')$text
   
-  stream_autocompletion_testing(voice_text)
+  ###### stream_autocompletion_testing(voice_text)
+  
+  autocomplete_r_code(prompt = voice_text, debug = FALSE)
+  
+  invisible()
 }

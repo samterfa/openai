@@ -16,3 +16,5 @@ Imports:
     rlang,
     stats,
     utils
+Enhances: 
+    audio
