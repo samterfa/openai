@@ -141,7 +141,7 @@ stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buff
   invisible()
 }
 
-gpt_voice_command <- function(time_out = 10, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = FALSE, debug = FALSE){
+gpt_voice_command <- function(time_out = 20, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = FALSE, debug = FALSE){
   
   gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
   gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
@@ -178,7 +178,7 @@ gpt_voice_command <- function(time_out = 10, sample_rate = 8000, file_path = tem
   invisible()
 }
 
-gpt_voice_command_exec <- function(time_out = 10, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = TRUE, debug = FALSE){
+gpt_voice_command_exec <- function(time_out = 20, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = TRUE, debug = FALSE){
   
   if(!require('audio', quietly = TRUE)) stop('You must install the "audio" package to use this addin.')
   
