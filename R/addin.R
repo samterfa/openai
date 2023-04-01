@@ -99,6 +99,8 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
 
 stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buffer = .2){
   
+  if(!require('httr2', quietly = TRUE)) stop('You must install the "httr2" package to use this addin.')
+  
   gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
   gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
   
@@ -160,7 +162,7 @@ gpt_voice_command <- function(time_out = 20, sample_rate = 8000, file_path = tem
   x <- rep(NA_real_, sample_rate * time_out)
   
   cat("\014")
-  
+
   message("Listening. Press return when finished.")
   
   audio::record(x, sample_rate, 1)
@@ -216,4 +218,28 @@ gpt_voice_command_exec <- function(time_out = 20, sample_rate = 8000, file_path 
   }
   
   invisible()
+}
+
+test_detect_talking <- function(){
+  
+  rt <- 8000
+  dt <- .01
+  timeout <- 20
+  compare_time <- 1
+  compare_offset <- 1
+  
+  x <- rep(NA_real_, timeout * rt)
+  # start recording into x
+  audio::record(x, rt, 1)
+  while(is.na(x[length(x)])){
+    if((x %>% na.omit() %>% length()) > (compare_time + compare_offset) * rt){
+      if(.5 * mean(abs(x) %>% na.omit() %>% tail(- compare_offset * rt) %>% head(compare_time * rt)) > mean(abs(x) %>% na.omit() %>% tail(compare_time * rt))){
+        break
+      }
+    }
+    Sys.sleep(dt)
+  }
+  x <- x %>% na.omit()
+  # play the recorded audio
+  audio::play(x)
 }
