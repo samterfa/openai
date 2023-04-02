@@ -12,9 +12,9 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
   
   if(debug) message(paste("Creating completion for", prompt))
   
-  if(!exists('openai_completions') | reset){
+  if(!exists('openai_completions') | reset || length(openai_completions) == 0){
     
-    bonus_prompt <- paste('You are an R coding assistant.', prompt, 'For the rest of this conversation, return R code only. Do not include anything else such as extra characters or comments.')
+    bonus_prompt <- paste('You are an R coding assistant. For the rest of this conversation, return R code only. Do not include anything else such as extra characters or comments. DO NOT install any packages but assume I already have them installed.', prompt)
     
     openai_completions <<-
       list(
@@ -39,13 +39,8 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
         )
       )
     
-    openai_completions_usage <<- 
-      openai_completions_usage + 
-      nchar(prompt)
+    openai_completions_usage <<- openai_completions_usage + nchar(prompt)
   }
-  
-  total_request_chars <-
-    openai_completions %>% purrr::keep(~ .x$role == 'user') %>% purrr::map_chr(~ .x$content) %>% paste(collapse = '') %>% nchar()
   
   if(debug) message('Making request...')
   
@@ -72,23 +67,25 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
         )
       )
     
-    openai_completions_usage <<- completion$usage$total_tokens # Could be completion_tokens or prompt_tokens also.
+    openai_completions_usage <<- completion$usage$total_tokens
     
     cat("\014")
     
-    # code = prompt, ...
     rstudioapi::sendToConsole(code = paste0(completion$choices[[1]]$message$content) %>% 
-                                stringr::str_remove('^\n') %>% stringr::str_remove('^R') %>% stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% str_remove_all('\\`\\`\\`') %>% str_trim(side = 'left'))
+                                stringr::str_remove('^\n') %>% stringr::str_remove('^R') %>% stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% str_remove_all('\\`\\`\\`') %>% str_trim(side = 'left'), 
+                              execute = TRUE, echo = TRUE)
     rstudioapi::sendToConsole("", execute = FALSE, echo = TRUE)
   }else{
     
+    # If an error is received, remove the last prompt from the completions chain.
     openai_completions <<-
       openai_completions %>% 
       head(-1)
     
+    # If an error is received, subtract the last estimate of usage added.
     openai_completions_usage <<- 
       openai_completions_usage - 
-      nchar(prompt)
+      nchar(prompt) / 4
     
     stop(httr::content(resp))
   }
@@ -149,7 +146,7 @@ stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buff
   invisible()
 }
 
-gpt_voice_command <- function(time_out = 20, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = FALSE, debug = FALSE){
+gpt_voice_command <- function(time_out = 20, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = FALSE, debug = FALSE, use_voice_detection = TRUE){
   
   gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
   gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
@@ -162,14 +159,22 @@ gpt_voice_command <- function(time_out = 20, sample_rate = 8000, file_path = tem
   x <- rep(NA_real_, sample_rate * time_out)
   
   cat("\014")
-
-  message("Listening. Press return when finished.")
   
-  audio::record(x, sample_rate, 1)
-  
-  R.utils::withTimeout(readline(''), timeout = time_out, onTimeout = "silent")
+  if(use_voice_detection){
+    message("Listening...")
+    x <- detect_talking(play_back = FALSE)
+  }else{
+    
+    message("Listening. Press return when finished.")
+    
+    audio::record(x, sample_rate, 1)
+    
+    readline('')
+  }
   
   cat("\014")
+  
+  message("Waiting for model...")
   
   audio::save.wave(what = x %>% na.omit(), 
                    where = file_path)
@@ -186,7 +191,7 @@ gpt_voice_command <- function(time_out = 20, sample_rate = 8000, file_path = tem
   invisible()
 }
 
-gpt_voice_command_exec <- function(time_out = 20, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = TRUE, debug = FALSE){
+gpt_voice_command_exec <- function(time_out = 20, sample_rate = 8000, file_path = tempfile(fileext = '.wav'), auto_execute = TRUE, debug = FALSE, use_voice_detection = TRUE){
   
   if(!require('audio', quietly = TRUE)) stop('You must install the "audio" package to use this addin.')
   
@@ -197,13 +202,30 @@ gpt_voice_command_exec <- function(time_out = 20, sample_rate = 8000, file_path 
   
   cat("\014")
   
-  message("Listening. Press return when finished.")
-  
-  audio::record(x, sample_rate, 1)
-  
-  R.utils::withTimeout(readline(''), timeout = time_out, onTimeout = "silent")
+  if(use_voice_detection){
+    message("Listening...")
+    x <- detect_talking(play_back = FALSE)
+  }else{
+    
+    message("Listening. Press return when finished.")
+    
+    recording <- 
+      audio::record(x, sample_rate, 1)
+    
+    on.exit({
+      audio::pause(recording)
+      audio::close.audioInstance(recording)
+    })
+    
+    readline('')
+    
+    audio::pause(recording)
+    audio::close.audioInstance(recording)
+  }
   
   cat("\014")
+  
+  message("Waiting for model...")
   
   audio::save.wave(what = x %>% na.omit(), 
                    where = file_path)
@@ -220,26 +242,39 @@ gpt_voice_command_exec <- function(time_out = 20, sample_rate = 8000, file_path 
   invisible()
 }
 
-test_detect_talking <- function(){
+detect_talking <- function(play_back = FALSE){
   
   rt <- 8000
-  dt <- .01
+  dt <- .1 
   timeout <- 20
-  compare_time <- 1
-  compare_offset <- 1
+  compare_time <- 1 # seconds
+  compare_offset <- 1 # seconds -- currently not used
   
   x <- rep(NA_real_, timeout * rt)
   # start recording into x
-  audio::record(x, rt, 1)
+  recording <- audio::record(x, rt, 1)
+  
+  on.exit({
+    audio::pause(recording)
+    audio::close.audioInstance(recording)
+  })
+  
+  # Compare previous compare_time * rt entries of audio to the most recent compare_time * rt entries of audio data.
+  # End recording automatically if most recent compare_time * rt entries of audio is 10% of previous compare_time * rt entries of audio "volume".
   while(is.na(x[length(x)])){
-    if((x %>% na.omit() %>% length()) > (compare_time + compare_offset) * rt){
-      if(.5 * mean(abs(x) %>% na.omit() %>% tail(- compare_offset * rt) %>% head(compare_time * rt)) > mean(abs(x) %>% na.omit() %>% tail(compare_time * rt))){
+    if((x %>% na.omit() %>% length()) > (compare_time * rt)){
+      if((.2 * mean(abs(x) %>% na.omit() %>% tail(2 * compare_time * rt) %>% head(tail(compare_time * rt)))) > (mean(abs(x) %>% na.omit() %>% tail(compare_time * rt)))){
         break
       }
     }
     Sys.sleep(dt)
   }
+  
+  # If ending early
   x <- x %>% na.omit()
-  # play the recorded audio
-  audio::play(x)
+  
+  # play the recorded audio for testing.
+  if(play_back) audio::play(x)
+  
+  x
 }
