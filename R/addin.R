@@ -247,8 +247,11 @@ detect_talking <- function(play_back = FALSE){
   rt <- 8000
   dt <- .1 
   timeout <- 20
+  ambient_time <- .3
   compare_time <- 1 # seconds
   compare_offset <- 1 # seconds -- currently not used
+  wait_time <- 1
+  sound_decrease <- .5
   
   x <- rep(NA_real_, timeout * rt)
   # start recording into x
@@ -263,8 +266,18 @@ detect_talking <- function(play_back = FALSE){
   # End recording automatically if most recent compare_time * rt entries of audio is 10% of previous compare_time * rt entries of audio "volume".
   while(is.na(x[length(x)])){
     if((x %>% na.omit() %>% length()) > (compare_time * rt)){
-      if((.2 * mean(abs(x) %>% na.omit() %>% tail(2 * compare_time * rt) %>% head(tail(compare_time * rt)))) > (mean(abs(x) %>% na.omit() %>% tail(compare_time * rt)))){
-        break
+      
+      ambient_sound <-
+        mean((abs(x) %>% na.omit())[1:(ambient_time * rt)])
+      
+      if(sound_decrease * (mean(abs(x) %>% na.omit() %>% tail(2 * compare_time * rt) %>% head(compare_time * rt)) - ambient_sound) > (mean(abs(x) %>% na.omit() %>% tail(compare_time * rt)) - ambient_sound)){
+        
+        Sys.sleep(wait_time)
+        
+        # If it's still quiet...
+        if(sound_decrease * (mean(abs(x) %>% na.omit() %>% tail(2 * (compare_time + wait_time) * rt) %>% head(compare_time * rt)) - ambient_sound) > (mean(abs(x) %>% na.omit() %>% tail((compare_time + wait_time) * rt) %>% head(compare_time * rt)) - ambient_sound)){
+          break;
+        }
       }
     }
     Sys.sleep(dt)
