@@ -94,7 +94,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
 }
 
 
-stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buffer = .2){
+stream_autocompletion_testing <- function(prompt, stream_buffer = .2){
   
   if(!require('httr2', quietly = TRUE)) stop('You must install the "httr2" package to use this addin.')
   
@@ -131,7 +131,7 @@ stream_autocompletion_testing <- function(prompt, max_tokens = 8000, stream_buff
                                        content = prompt
                                   )
                                 ), 
-                              max_tokens = max_tokens, 
+                              max_tokens = gpt_max_tokens, 
                               model = gpt_model, 
                               stream = TRUE)) %>% 
     httr2::req_auth_bearer_token(token = Sys.getenv('openai_secret_key')) %>% 
