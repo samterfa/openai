@@ -1,6 +1,6 @@
 Package: openai
 Title: Consumes the Open AI API
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person("Sam", "Terfa", , "samterfa@gmail.com", role = c("aut", "cre"))
 Description: This package is an SDK for Open AI's API.
