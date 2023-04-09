@@ -85,7 +85,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     # If an error is received, subtract the last estimate of usage added.
     openai_completions_usage <<- 
       openai_completions_usage - 
-      nchar(prompt) / 4
+      nchar(prompt)
     
     stop(httr::content(resp))
   }
@@ -123,15 +123,13 @@ stream_autocompletion_testing <- function(prompt, stream_buffer = .2){
   
   cat("\014")
   
+  messages <- list(list(role = 'user', content = prompt))
+  messages_char_count <- messages %>% jsonlite::toJSON() %>% nchar()
+  
   results <- 
     httr2::request('https://api.openai.com/v1/chat/completions') %>% 
-    httr2::req_body_json(list(messages = 
-                                list(
-                                  list(role = 'user', 
-                                       content = prompt
-                                  )
-                                ), 
-                              max_tokens = gpt_max_tokens, 
+    httr2::req_body_json(list(messages = messages, 
+                              max_tokens = gpt_max_tokens - messages_char_count, 
                               model = gpt_model, 
                               stream = TRUE)) %>% 
     httr2::req_auth_bearer_token(token = Sys.getenv('openai_secret_key')) %>% 
