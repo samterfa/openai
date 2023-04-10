@@ -51,7 +51,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
   
   if(debug) message('Finished request...')
   
-  if(resp$status_code < 400){
+  if(resp$status_code < 300){
     
     completion <- httr::content(resp)
     
@@ -66,6 +66,9 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     openai_completions_usage <<- completion$usage$total_tokens
     
     cat("\014")
+    
+    
+    rstudioapi::sendToConsole(prompt, execute = TRUE)
     
     rstudioapi::sendToConsole(code = paste0(completion$choices[[1]]$message$content) %>% 
                                 stringr::str_remove('^\n') %>% stringr::str_remove('^R') %>% stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% stringr::str_remove_all('\\`\\`\\`') %>% stringr::str_trim(side = 'left'), 
