@@ -5,11 +5,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
   gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
   
   if(debug) message('Started...')
-  
-  suppressPackageStartupMessages(
-    library(tidyverse)
-  )
-  
+ 
   if(debug) message(paste("Creating completion for", prompt))
   
   if(!exists('openai_completions') | reset || length(openai_completions) == 0){
@@ -72,7 +68,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     cat("\014")
     
     rstudioapi::sendToConsole(code = paste0(completion$choices[[1]]$message$content) %>% 
-                                stringr::str_remove('^\n') %>% stringr::str_remove('^R') %>% stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% str_remove_all('\\`\\`\\`') %>% str_trim(side = 'left'), 
+                                stringr::str_remove('^\n') %>% stringr::str_remove('^R') %>% stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% stringr::str_remove_all('\\`\\`\\`') %>% stringr::str_trim(side = 'left'), 
                               execute = TRUE, echo = TRUE)
     rstudioapi::sendToConsole("", execute = FALSE, echo = TRUE)
   }else{
@@ -80,7 +76,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     # If an error is received, remove the last prompt from the completions chain.
     openai_completions <<-
       openai_completions %>% 
-      head(-1)
+      utils::head(-1)
     
     # If an error is received, subtract the last estimate of usage added.
     openai_completions_usage <<- 
@@ -116,7 +112,7 @@ stream_autocompletion_testing <- function(prompt, stream_buffer = .2){
     
     if('choices' %in% names(to_process)) to_process <- to_process %>% tidyr::unnest(choices)
     if('delta' %in% names(to_process)) to_process <- to_process %>% tidyr::unnest(delta)
-    if('content' %in% names(to_process)) cat(to_process$content %>% na.omit() %>% paste(collapse = ''))
+    if('content' %in% names(to_process)) cat(to_process$content %>% stats::na.omit() %>% paste(collapse = ''))
     
     TRUE
   }
@@ -174,7 +170,7 @@ gpt_voice_command <- function(time_out = 20, sample_rate = 8000, file_path = tem
   
   message("Waiting for model...")
   
-  audio::save.wave(what = x %>% na.omit(), 
+  audio::save.wave(what = x %>% stats::na.omit(), 
                    where = file_path)
   
   voice_text <-
@@ -225,7 +221,7 @@ gpt_voice_command_exec <- function(time_out = 20, sample_rate = 8000, file_path 
   
   message("Waiting for model...")
   
-  audio::save.wave(what = x %>% na.omit(), 
+  audio::save.wave(what = x %>% stats::na.omit(), 
                    where = file_path)
   
   voice_text <-
@@ -263,17 +259,17 @@ detect_talking <- function(play_back = FALSE){
   # Compare previous compare_time * rt entries of audio to the most recent compare_time * rt entries of audio data.
   # End recording automatically if most recent compare_time * rt entries of audio is 10% of previous compare_time * rt entries of audio "volume".
   while(is.na(x[length(x)])){
-    if((x %>% na.omit() %>% length()) > (compare_time * rt)){
+    if((x %>% stats::na.omit() %>% length()) > (compare_time * rt)){
       
       ambient_sound <-
-        mean((abs(x) %>% na.omit())[1:(ambient_time * rt)])
+        mean((abs(x) %>% stats::na.omit())[1:(ambient_time * rt)])
       
-      if(sound_decrease * (mean(abs(x) %>% na.omit() %>% tail(2 * compare_time * rt) %>% head(compare_time * rt)) - ambient_sound) > (mean(abs(x) %>% na.omit() %>% tail(compare_time * rt)) - ambient_sound)){
+      if(sound_decrease * (mean(abs(x) %>% stats::na.omit() %>% utils::tail(2 * compare_time * rt) %>% utils::head(compare_time * rt)) - ambient_sound) > (mean(abs(x) %>% stats::na.omit() %>% utils::tail(compare_time * rt)) - ambient_sound)){
         
         Sys.sleep(wait_time)
         
         # If it's still quiet...
-        if(sound_decrease * (mean(abs(x) %>% na.omit() %>% tail(2 * (compare_time + wait_time) * rt) %>% head(compare_time * rt)) - ambient_sound) > (mean(abs(x) %>% na.omit() %>% tail((compare_time + wait_time) * rt) %>% head(compare_time * rt)) - ambient_sound)){
+        if(sound_decrease * (mean(abs(x) %>% stats::na.omit() %>% utils::tail(2 * (compare_time + wait_time) * rt) %>% utils::head(compare_time * rt)) - ambient_sound) > (mean(abs(x) %>% stats::na.omit() %>% utils::tail((compare_time + wait_time) * rt) %>% utils::head(compare_time * rt)) - ambient_sound)){
           break;
         }
       }
@@ -282,7 +278,7 @@ detect_talking <- function(play_back = FALSE){
   }
   
   # If ending early
-  x <- x %>% na.omit()
+  x <- x %>% stats::na.omit()
   
   # play the recorded audio for testing.
   if(play_back) audio::play(x)
