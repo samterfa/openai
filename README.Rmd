@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # openai
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 openai provides R scripts to use the [Open AI API](https://beta.openai.com/docs/api-reference/)
@@ -80,4 +81,5 @@ create_image(
 Use the included addin to code collaboratively with a model.
 
 ![](addin_demo_1.gif)
-Access it via the Addins menu, or by Tools -> Addins -> Browse Addins. Search for "openai".
+
+Access it via the Addins menu, or by Tools -\> Addins -\> Browse Addins. Search for "openai".

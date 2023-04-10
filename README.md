@@ -73,7 +73,7 @@ create_completion(
   prompt = 'Once upon a time') %>% 
   pluck('choices') %>% 
   map_chr(~ .x$text)
-#> [1] ", the world was a very different place. The most powerful people on the planet were not the presidents and prime ministers and CEOs of today, but the"
+#> [1] ", the American people were told that the national debt was a problem that needed to be addressed. For years, we were told that the debt needed to"
 ```
 
 Generate an image based on a prompt.
@@ -84,15 +84,17 @@ create_image(
   n = 1, 
   response_format = "url")
 #> $created
-#> [1] 1681097990
+#> [1] 1681098152
 #> 
 #> $data
 #> $data[[1]]
 #> $data[[1]]$url
-#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-kkydRAQf7KYgefHOixv4XRJ4.png?st=2023-04-10T02%3A39%3A50Z&se=2023-04-10T04%3A39%3A50Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-09T16%3A24%3A54Z&ske=2023-04-10T16%3A24%3A54Z&sks=b&skv=2021-08-06&sig=HxhkSby5OuHyjqcCBDu0ewpDWSvgx6Wu9fpdSwyQpEk%3D"
+#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-nNmUMLGQUJDhwOleqPmLbNrJ.png?st=2023-04-10T02%3A42%3A32Z&se=2023-04-10T04%3A42%3A32Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-10T02%3A16%3A49Z&ske=2023-04-11T02%3A16%3A49Z&sks=b&skv=2021-08-06&sig=VASLMPbHhvM4dbL868evY%2BZ3TNL7SYoetoM5PJ84GMI%3D"
 ```
 
 Use the included addin to code collaboratively with a model.
 
-![](addin_demo_1.gif) Access it via the Addins menu, or by Tools -\>
-Addins -\> Browse Addins. Search for “openai”.
+![](addin_demo_1.gif)
+
+Access it via the Addins menu, or by Tools -\> Addins -\> Browse Addins.
+Search for “openai”.
