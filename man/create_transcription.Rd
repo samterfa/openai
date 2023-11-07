@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_transcription}
 \alias{create_transcription}
-\title{Create Transcription - Beta}
+\title{Create Transcription}
 \usage{
 create_transcription(
   file,
@@ -15,7 +15,7 @@ create_transcription(
 )
 }
 \arguments{
-\item{file}{(string) The audio file to transcribe, in one of these formats: mp3, mp4, mpeg, mpga, m4a, wav, or webm. Required}
+\item{file}{(file) The audio file object (not file name) to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. Required}
 
 \item{model}{(string) ID of the model to use. Only whisper-1 is currently available. Required}
 
@@ -33,5 +33,5 @@ create_transcription(
 Transcribes audio into the input language.
 }
 \seealso{
-\href{https://platform.openai.com/docs/api-reference/audio/create}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/audio/createTranscription}{Open AI Documentation}
 }

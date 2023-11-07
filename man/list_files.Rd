@@ -4,9 +4,11 @@
 \alias{list_files}
 \title{List Files}
 \usage{
-list_files(return_response = F)
+list_files(purpose = NULL, return_response = F)
 }
 \arguments{
+\item{purpose}{(string) Only return files with the given purpose.}
+
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{

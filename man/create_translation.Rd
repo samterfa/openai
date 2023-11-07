@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{create_translation}
 \alias{create_translation}
-\title{Create Translation - Beta}
+\title{Create Translation}
 \usage{
 create_translation(
   file,
@@ -14,7 +14,7 @@ create_translation(
 )
 }
 \arguments{
-\item{file}{(string) The audio file to translate, in one of these formats: mp3, mp4, mpeg, mpga, m4a, wav, or webm. Required}
+\item{file}{(file) The audio file object (not file name) translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. Required}
 
 \item{model}{(string) ID of the model to use. Only whisper-1 is currently available. Required}
 
@@ -27,8 +27,8 @@ create_translation(
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Translates audio into into English.
+Translates audio into English.
 }
 \seealso{
-\href{https://platform.openai.com/docs/api-reference/audio/create}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/audio/createTranslation}{Open AI Documentation}
 }

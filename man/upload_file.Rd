@@ -7,15 +7,15 @@
 upload_file(file, purpose, return_response = F)
 }
 \arguments{
-\item{file}{(string) Name of the JSON Lines file to be uploaded. If the purpose is set to "fine-tune", each line is a JSON record with "prompt" and "completion" fields representing your training examples. Required}
+\item{file}{(string) The File object (not file name) to be uploaded. Required}
 
-\item{purpose}{(string) The intended purpose of the uploaded documents. Use "fine-tune" for Fine-tuning. This allows us to validate the format of the uploaded file. Required}
+\item{purpose}{(string) The intended purpose of the uploaded file. Use "fine-tune" for Fine-tuning and "assistants" for Assistants and Messages. This allows us to validate the format of the uploaded file is correct for fine-tuning. Required}
 
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+Upload a file that can be used across various endpoints/features. The size of all the files uploaded by one organization can be up to 100 GB.
 }
 \seealso{
-\href{https://platform.openai.com/docs/api-reference/files/upload}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/files/create}{Open AI Documentation}
 }

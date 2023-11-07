@@ -83,7 +83,8 @@ parse_endpoints <- function(documentation_path = '~/API Reference - OpenAI API.h
       
       params_section_params <-
         params_section %>%
-        rvest::html_elements('.api-ref-anchor-link-hover')
+        rvest::html_elements(".param-row")
+      ####     rvest::html_elements('.api-ref-anchor-link-hover')
       
       params_df <- tibble::tibble()
       
@@ -107,7 +108,11 @@ parse_endpoints <- function(documentation_path = '~/API Reference - OpenAI API.h
         if(is.na(param_required)){
           param_required <- FALSE
         }else{
-          param_required <- TRUE
+          if(param_required == 'Required'){
+            param_required <- TRUE
+          }else{
+            param_required <- FALSE
+          }
         }
         
         param_description <-
@@ -169,7 +174,7 @@ parse_endpoints <- function(documentation_path = '~/API Reference - OpenAI API.h
     dplyr::mutate(dplyr::across(param_required, ~ ifelse(is.na(param_required), F, param_required)))
 }
 
-generate_functions <- function(endpoints_df = parse_endpoints(), output_path = 'R/functions.R'){
+generate_functions <- function(doc_path = '~/API Reference - OpenAI API.html', endpoints_df = parse_endpoints(doc_path), output_path = 'R/functions.R'){
   
   base_url <- 'https://api.openai.com/v1'
   
@@ -341,15 +346,21 @@ generate_functions <- function(endpoints_df = parse_endpoints(), output_path = '
                glue::glue("\tquery <- NULL\n\n", .trim = F))
     }
     
+    if(stringr::str_detect(endpoint_name, " - Beta$") & stringr::str_detect(function_name, '_assistant|_thread|_message|_run')){
+      beta_header_val <- '"assistants=v1"'
+    }else{
+      beta_header_val <- "NULL"
+    }
+    
     # Facilitate uploading files
     if('file' %in% body_params$param_name){ ###if(function_name == 'upload_file'){
       function_text <-
         paste0(function_text,
-               glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
+               glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'multipart', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), `OpenAI-Beta` = {beta_header_val}, Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
     }else{
       function_text <-
         paste0(function_text,
-               glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
+               glue::glue("\tresponse <- httr::{endpoint_method}(url = endpoint_url, body = body, encode = 'json', query = query, httr::add_headers(`OpenAI-Organization` = Sys.getenv(\"openai_organization_id\"), `OpenAI-Beta` = {beta_header_val}, Authorization = glue::glue('Bearer {{Sys.getenv(\"openai_secret_key\")}}')))"))
     }
     
     function_text <-

@@ -2,12 +2,13 @@
 % Please edit documentation in R/functions.R
 \name{create_image_edit}
 \alias{create_image_edit}
-\title{Create Image Edit - Beta}
+\title{Create Image Edit}
 \usage{
 create_image_edit(
   image,
   prompt,
   mask = NULL,
+  model = NULL,
   n = NULL,
   response_format = NULL,
   size = NULL,
@@ -22,11 +23,13 @@ create_image_edit(
 
 \item{mask}{(string) An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.}
 
-\item{n}{(integer) The number of images to generate. Must be between 1 and 10.}
+\item{model}{(string) The model to use for image generation. Only dall-e-2 is supported at this time.}
 
-\item{response_format}{(string) The format in which the generated images are returned. Must be one of url or b64_json.}
+\item{n}{(integer or null) The number of images to generate. Must be between 1 and 10.}
 
-\item{size}{(string) The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024.}
+\item{response_format}{(string or null) The format in which the generated images are returned. Must be one of url or b64_json.}
+
+\item{size}{(string or null) The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024.}
 
 \item{user}{(string) A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. Learn more.}
 
@@ -36,5 +39,5 @@ create_image_edit(
 Creates an edited or extended image given an original image and a prompt.
 }
 \seealso{
-\href{https://platform.openai.com/docs/api-reference/images/create-edit}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/images/createEdit}{Open AI Documentation}
 }

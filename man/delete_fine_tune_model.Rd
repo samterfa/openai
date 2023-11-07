@@ -12,8 +12,8 @@ delete_fine_tune_model(model, return_response = F)
 \item{return_response}{(boolean) Whether to return the API response or parse the contents of the response. Defaults to FALSE (parse the response).}
 }
 \description{
-Delete a fine-tuned model. You must have the Owner role in your organization.
+Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.
 }
 \seealso{
-\href{https://platform.openai.com/docs/api-reference/fine-tunes/delete-model}{Open AI Documentation}
+\href{https://platform.openai.com/docs/api-reference/models/delete}{Open AI Documentation}
 }

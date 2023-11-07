@@ -2,25 +2,34 @@
 % Please edit documentation in R/functions.R
 \name{create_image}
 \alias{create_image}
-\title{Create Image - Beta}
+\title{Create Image}
 \usage{
 create_image(
   prompt,
+  model = NULL,
   n = NULL,
+  quality = NULL,
   response_format = NULL,
   size = NULL,
+  style = NULL,
   user = NULL,
   return_response = F
 )
 }
 \arguments{
-\item{prompt}{(string) A text description of the desired image(s). The maximum length is 1000 characters. Required}
+\item{prompt}{(string) A text description of the desired image(s). The maximum length is 1000 characters for dall-e-2 and 4000 characters for dall-e-3. Required}
 
-\item{n}{(integer) The number of images to generate. Must be between 1 and 10.}
+\item{model}{(string) The model to use for image generation.}
 
-\item{response_format}{(string) The format in which the generated images are returned. Must be one of url or b64_json.}
+\item{n}{(integer or null) The number of images to generate. Must be between 1 and 10. For dall-e-3, only n=1 is supported.}
 
-\item{size}{(string) The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024.}
+\item{quality}{(string) The quality of the image that will be generated. hd creates images with finer details and greater consistency across the image. This param is only supported for dall-e-3.}
+
+\item{response_format}{(string or null) The format in which the generated images are returned. Must be one of url or b64_json.}
+
+\item{size}{(string or null) The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024 for dall-e-2. Must be one of 1024x1024, 1792x1024, or 1024x1792 for dall-e-3 models.}
+
+\item{style}{(string or null) The style of the generated images. Must be one of vivid or natural. Vivid causes the model to lean towards generating hyper-real and dramatic images. Natural causes the model to produce more natural, less hyper-real looking images. This param is only supported for dall-e-3.}
 
 \item{user}{(string) A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. Learn more.}
 
