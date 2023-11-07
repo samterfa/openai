@@ -1,11 +1,13 @@
 
 autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$contents, debug = FALSE, reset = FALSE){
   
+  library(dplyr)
+  
   gpt_model <- ifelse(Sys.getenv('openai_addin_model') == '', 'gpt-3.5-turbo', Sys.getenv('openai_addin_model'))
   gpt_max_tokens <- ifelse(Sys.getenv('openai_addin_model') == '' || Sys.getenv('openai_addin_model_max_tokens') == '', 4096, as.numeric(Sys.getenv('openai_addin_model_max_tokens')))
   
   if(debug) message('Started...')
- 
+  
   if(debug) message(paste("Creating completion for", prompt))
   
   if(!exists('openai_completions') | reset || length(openai_completions) == 0){
@@ -68,12 +70,23 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     cat("\014")
     
     
-    rstudioapi::sendToConsole(prompt, execute = TRUE)
+  #  rstudioapi::sendToConsole(prompt, execute = TRUE)
     
-    rstudioapi::sendToConsole(code = paste0(completion$choices[[1]]$message$content) %>% 
-                                stringr::str_remove('^\n') %>% stringr::str_remove('^R') %>% stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% stringr::str_remove_all('\\`\\`\\`') %>% stringr::str_trim(side = 'left'), 
-                              execute = TRUE, echo = TRUE)
-    rstudioapi::sendToConsole("", execute = FALSE, echo = TRUE)
+    to_run <- 
+      paste0("#", prompt, "\n",
+             completion$choices[[1]]$message$content %>%
+               stringr::str_remove('R\n') %>% 
+               stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% 
+               stringr::str_remove_all('\\`\\`\\`') %>% 
+               stringr::str_trim(side = 'left')
+      )
+    
+    print(to_run)
+    
+    rstudioapi::sendToConsole(code = to_run, 
+                              execute = TRUE, 
+                              echo = TRUE)
+    # rstudioapi::sendToConsole("", execute = FALSE, echo = TRUE)
   }else{
     
     # If an error is received, remove the last prompt from the completions chain.
