@@ -12,7 +12,7 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
   
   if(!exists('openai_completions') | reset || length(openai_completions) == 0){
     
-    bonus_prompt <- paste('You are an R coding assistant. For the rest of this conversation, return R code only. Do not include anything else such as extra characters or comments. DO NOT install any packages but assume I already have them installed.', prompt)
+    bonus_prompt <- paste('You are an RStudio coding assistant. All code you return will be run in RStudio. For the rest of this conversation, return R code chunks only. DO NOT install any packages but assume I already have them installed.', prompt)
     
     openai_completions <<-
       list(
@@ -69,19 +69,26 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     
     cat("\014")
     
+    print(completion$choices[[1]]$message$content)
     
-  #  rstudioapi::sendToConsole(prompt, execute = TRUE)
+    #  rstudioapi::sendToConsole(prompt, execute = TRUE)
     
-    to_run <- 
-      paste0("#", prompt, "\n",
-             completion$choices[[1]]$message$content %>%
-               stringr::str_remove('R\n') %>% 
-               stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>% 
-               stringr::str_remove_all('\\`\\`\\`') %>% 
-               stringr::str_trim(side = 'left')
-      )
-    
-    print(to_run)
+    if(stringr::str_detect(completion$choices[[1]]$message$content %>% stringr::str_remove_all("[rR]\n"), "(?<=```[rR]).*(?=```)")){
+      to_run <-
+        paste0("#", prompt, "\n",
+               completion$choices[[1]]$message$content %>% 
+                 stringr::str_remove("[rR]\n") %>%
+                 stringr::str_extract("(?<=```).*(?=```)"))
+    }else{
+      to_run <-
+        paste0("#", prompt, "\n",
+               completion$choices[[1]]$message$content %>%
+                 stringr::str_remove('R\n') %>%
+                 stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>%
+                 stringr::str_remove_all('\\`\\`\\`') %>%
+                 stringr::str_trim(side = 'left')
+        )
+    }
     
     rstudioapi::sendToConsole(code = to_run, 
                               execute = TRUE, 
