@@ -286,7 +286,7 @@ use_assistant_screenshot <- function(session = make_session(), new_message = NUL
 }
 
 
-vision_prompting <- function(iter = 5){
+vision_prompting <- function(iter = 5, task = 'Recreate and iteratively improve this plot until it is publication ready.'){
   
   model <- 'gpt-4-vision-preview'
   
@@ -305,14 +305,14 @@ vision_prompting <- function(iter = 5){
         content = list(
           list(
             type = 'text',
-            text = 'Recreate and iteratively improve this plot until it is publication ready.'
-          ),
-          list(
-            type = 'image_url',
-            image_url = list(
-              url = glue::glue("data:image/jpeg;base64,{starting_image}")
-            )
-          )
+            text = task
+          )#,
+          # list(
+          #   type = 'image_url',
+          #   image_url = list(
+          #     url = glue::glue("data:image/jpeg;base64,{starting_image}")
+          #   )
+          # )
         )
       )
     )
@@ -320,7 +320,7 @@ vision_prompting <- function(iter = 5){
   for(i in 1:iter){
     
     completion <-
-      create_chat_completion(messages = messages, model = model, max_tokens = 300)
+      create_chat_completion(messages = messages, model = model, max_tokens = 1000)
     
     return_message <- 
       completion$choices[[1]]$message
@@ -359,6 +359,31 @@ vision_prompting <- function(iter = 5){
       messages %>%
       append(list(new_message))
   }
+  
+  new_message <-
+    list(
+      role = 'user',
+      content = list(
+        list(
+          type = 'text',
+          text = 'Great job! Now, summarize your findings in a paragraph.'
+        )
+      )
+    )
+  
+  messages <-
+    messages %>%
+    append(list(new_message))
+  
+  completion <-
+    create_chat_completion(messages = messages, model = model, max_tokens = 1000)
+  
+  return_message <- 
+    completion$choices[[1]]$message
+  
+  messages <-
+    messages %>%
+    append(list(return_message))
   
   messages
 }
