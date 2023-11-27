@@ -286,36 +286,58 @@ use_assistant_screenshot <- function(session = make_session(), new_message = NUL
 }
 
 
-vision_prompting <- function(iter = 5, task = 'Recreate and iteratively improve this plot until it is publication ready.'){
+vision_prompting <- function(iter = 5, initial_task = 'Recreate and iteratively improve this plot until it is publication ready.', final_task = '', img_path = NULL){
   
   model <- 'gpt-4-vision-preview'
   
-  starting_image <-
-    '~/Desktop/Screen Shot 2023-11-21 at 8.03.57 PM.png' %>%
-    base64enc::base64encode()
-  
-  messages <-
-    list(
+  if(!is.null(img_path)){
+    img <-
+      img_path %>%
+      base64enc::base64encode()
+    
+    messages <-
       list(
-        role = 'system',
-        content = 'You are an R code generator. The user will run your code in an RStudio session and return to you a screenshot showing you the results of running your code. Only return R code.'
-      ),
-      list(
-        role = 'user',
-        content = list(
-          list(
-            type = 'text',
-            text = task
-          )#,
-          # list(
-          #   type = 'image_url',
-          #   image_url = list(
-          #     url = glue::glue("data:image/jpeg;base64,{starting_image}")
-          #   )
-          # )
+        list(
+          role = 'system',
+          content = 'You are an R code generator. The user will run your code in an RStudio session and return to you a screenshot showing you the results of running your code. Only return R code.'
+        ),
+        list(
+          role = 'user',
+          content = list(
+            list(
+              type = 'text',
+              text = initial_task
+            ),
+            list(
+              type = 'image_url',
+              image_url = list(
+                url = glue::glue("data:image/jpeg;base64,{img}")
+              )
+            )
+          )
         )
       )
-    )
+    
+  }else{
+    messages <-
+      list(
+        list(
+          role = 'system',
+          content = 'You are an R code generator. The user will run your code in an RStudio session and return to you a screenshot showing you the results of running your code. Only return R code.'
+        ),
+        list(
+          role = 'user',
+          content = list(
+            list(
+              type = 'text',
+              text = initial_task
+            )
+          )
+        )
+      )
+  }
+  
+  
   
   for(i in 1:iter){
     
@@ -366,7 +388,7 @@ vision_prompting <- function(iter = 5, task = 'Recreate and iteratively improve 
       content = list(
         list(
           type = 'text',
-          text = 'Great job! Now, summarize your findings in a paragraph.'
+          text = final_task
         )
       )
     )

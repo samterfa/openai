@@ -1,4 +1,37 @@
 
+extract_r_code <- function(txt){
+  
+  r_code <-
+    txt  %>% 
+    stringr::str_replace_all("\n", "asdfdareasrads") %>% 
+    stringr::str_extract("(?<=```).*(?=```)") %>% 
+    stringr::str_remove("^[rR]") %>% 
+    stringr::str_replace_all(fixed("asdfdareasrads"), "\n")
+  
+  comments <-
+    txt  %>% 
+    stringr::str_replace_all("\n", "asdfdareasrads") %>% 
+    stringr::str_extract(".*(?=`*)") %>%
+    stringr::str_replace_all(fixed("asdfdareasrads"), "\n")
+  
+  return(list(r_code = r_code, comments = comments))
+}
+
+extract_r_code2 <- function(txt){
+  
+  parsed_txt <- 
+    tibble::tibble(txt = txt %>% stringr::str_split("```") %>% purrr::pluck(1), 
+                   is_code = stringr::str_detect(txt, '^[rR]')) %>% 
+    dplyr::mutate(txt = txt %>% stringr::str_remove_all("^[rR]") %>% stringr::str_remove_all("^\\n*") %>% stringr::str_remove_all("\\n*$"),
+                  txt = ifelse(!is_code, paste0("# ", txt), txt)) %>%
+    dplyr::filter(txt != '') %>%
+    dplyr::pull(txt) %>%
+    paste(collapse = '\n\n')
+  
+  parsed_txt
+}
+
+
 autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$contents, debug = FALSE, reset = FALSE){
   
   library(dplyr)
@@ -69,26 +102,30 @@ autocomplete_r_code <- function(prompt = rstudioapi::getConsoleEditorContext()$c
     
     cat("\014")
     
-    print(completion$choices[[1]]$message$content)
-    
     #  rstudioapi::sendToConsole(prompt, execute = TRUE)
     
-    if(stringr::str_detect(completion$choices[[1]]$message$content %>% stringr::str_remove_all("[rR]\n"), "(?<=```[rR]).*(?=```)")){
-      to_run <-
-        paste0("#", prompt, "\n",
-               completion$choices[[1]]$message$content %>% 
-                 stringr::str_remove("[rR]\n") %>%
-                 stringr::str_extract("(?<=```).*(?=```)"))
-    }else{
-      to_run <-
-        paste0("#", prompt, "\n",
-               completion$choices[[1]]$message$content %>%
-                 stringr::str_remove('R\n') %>%
-                 stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>%
-                 stringr::str_remove_all('\\`\\`\\`') %>%
-                 stringr::str_trim(side = 'left')
-        )
-    }
+    # if(stringr::str_detect(completion$choices[[1]]$message$content %>% stringr::str_remove_all("[rR]\n"), "(?<=```[rR]).*(?=```)")){
+    #   # to_run <-
+    #   #   paste0("#", prompt, "\n",
+    #   #          completion$choices[[1]]$message$content %>% 
+    #   #            stringr::str_remove("[rR]\n") %>%
+    #   #            stringr::str_extract("(?<=```).*(?=```)"))
+    #  
+    # }else{
+    #   
+    #   # to_run <-
+    #   #   paste0("#", prompt, "\n",
+    #   #          completion$choices[[1]]$message$content %>%
+    #   #            stringr::str_remove('R\n') %>%
+    #   #            stringr::str_remove_all('\\`\\`\\`\\{r\\}') %>%
+    #   #            stringr::str_remove_all('\\`\\`\\`') %>%
+    #   #            stringr::str_trim(side = 'left')
+    #   #   )
+    # }
+    
+    to_run <-
+      paste0("# ", prompt, "\n",
+             extract_r_code2(completion$choices[[1]]$message$content))
     
     rstudioapi::sendToConsole(code = to_run, 
                               execute = TRUE, 
