@@ -38,7 +38,7 @@ More details on authentication can be found
 
 ## Examples
 
-#### Retrieve the currently available models used to generate text.
+#### Retrieve the currently available models.
 
 ``` r
 library(openai)
@@ -61,7 +61,7 @@ list_models()$data %>%
 #> # ℹ 62 more rows
 ```
 
-#### Create a completion request using the davinci engine.
+#### Create a chat completion request.
 
 ``` r
 create_chat_completion(
