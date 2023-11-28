@@ -6,8 +6,11 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-openai provides R scripts to use the [Open AI
-API](https://beta.openai.com/docs/api-reference/)
+The openai package provides R scripts to use the [Open AI
+API](https://platform.openai.com/docs/api-reference/). In order to get
+started you will need to sign up for an account at
+<https://openai.com/>. You will also need to set up billing to use the
+API.
 
 ## Installation
 
@@ -35,64 +38,87 @@ More details on authentication can be found
 
 ## Examples
 
-Retrieve the currently available models used to generate text.
+#### Retrieve the currently available models used to generate text.
 
 ``` r
 library(openai)
-library(purrr)
 
-list_models() %>% 
-  pluck('data') %>% 
-  map_dfr(compact)
-#> # A tibble: 68 × 7
-#>    id                          object  created owned…¹ permission   root  parent
-#>    <chr>                       <chr>     <int> <chr>   <list>       <chr> <chr> 
-#>  1 babbage                     model    1.65e9 openai  <named list> babb… <NA>  
-#>  2 davinci                     model    1.65e9 openai  <named list> davi… <NA>  
-#>  3 text-davinci-edit-001       model    1.65e9 openai  <named list> text… <NA>  
-#>  4 babbage-code-search-code    model    1.65e9 openai… <named list> babb… <NA>  
-#>  5 text-similarity-babbage-001 model    1.65e9 openai… <named list> text… <NA>  
-#>  6 code-davinci-edit-001       model    1.65e9 openai  <named list> code… <NA>  
-#>  7 text-davinci-001            model    1.65e9 openai  <named list> text… <NA>  
-#>  8 ada                         model    1.65e9 openai  <named list> ada   <NA>  
-#>  9 babbage-code-search-text    model    1.65e9 openai… <named list> babb… <NA>  
-#> 10 babbage-similarity          model    1.65e9 openai… <named list> babb… <NA>  
-#> # … with 58 more rows, and abbreviated variable name ¹​owned_by
+list_models()$data %>% 
+  dplyr::bind_rows()
+#> # A tibble: 72 × 4
+#>    id                            object    created owned_by       
+#>    <chr>                         <chr>       <int> <chr>          
+#>  1 text-search-babbage-doc-001   model  1651172509 openai-dev     
+#>  2 gpt-4                         model  1687882411 openai         
+#>  3 gpt-3.5-turbo-16k             model  1683758102 openai-internal
+#>  4 curie-search-query            model  1651172509 openai-dev     
+#>  5 text-davinci-003              model  1669599635 openai-internal
+#>  6 text-search-babbage-query-001 model  1651172509 openai-dev     
+#>  7 babbage                       model  1649358449 openai         
+#>  8 gpt-3.5-turbo-1106            model  1698959748 system         
+#>  9 babbage-search-query          model  1651172509 openai-dev     
+#> 10 text-babbage-001              model  1649364043 openai         
+#> # ℹ 62 more rows
 ```
 
-Create a completion request using the davinci engine.
+#### Create a completion request using the davinci engine.
 
 ``` r
-create_completion(
-  model = 'davinci', 
-  max_tokens = 30,
-  temperature = .5,
-  top_p = 1,
-  n = 1,
-  stream = F, 
-  prompt = 'Once upon a time') %>% 
-  pluck('choices') %>% 
-  map_chr(~ .x$text)
-#> [1] ", the American people were told that the national debt was a problem that needed to be addressed. For years, we were told that the debt needed to"
+create_chat_completion(
+  model = 'gpt-3.5-turbo', 
+  messages = 
+    list(
+      list(role = 'system', content = 'You are a helpful assistant.'),
+      list(role = 'user', content = 'Who won the world series in 2020?'),
+      list(role = 'assistant', content = 'The Los Angeles Dodgers won the world series in 2020.'),
+      list(role = 'user', content = 'Where was it played?')
+    )
+)$choices[[1]]$message$content
+#> [1] "The 2020 World Series was played in Arlington, Texas at the Globe Life Field, which is the new home stadium of the Texas Rangers."
 ```
 
-Generate an image based on a prompt.
+#### Generate an image based on a prompt.
 
 ``` r
-create_image(
-  prompt = "A rollerskating zebra", 
-  n = 1, 
-  response_format = "url")
-#> $created
-#> [1] 1681098152
-#> 
-#> $data
-#> $data[[1]]
-#> $data[[1]]$url
-#> [1] "https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-nNmUMLGQUJDhwOleqPmLbNrJ.png?st=2023-04-10T02%3A42%3A32Z&se=2023-04-10T04%3A42%3A32Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-10T02%3A16%3A49Z&ske=2023-04-11T02%3A16%3A49Z&sks=b&skv=2021-08-06&sig=VASLMPbHhvM4dbL868evY%2BZ3TNL7SYoetoM5PJ84GMI%3D"
+img_url <-
+  create_image(
+    model = 'dall-e-3',
+    prompt = 'a white siamese cat', 
+    n = 1, 
+    size = '1024x1024')$data[[1]]$url
+
+knitr::include_graphics(img_url)
 ```
 
-Use the included addin to code collaboratively with a model.
+<img src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-nKKiUxRVJQl2MhzgM9gtTsko/user-uQ6jdzskUi7KqutVEN82ZpLB/img-lvFjAjxPPqsZkzIZ3jY0f7YD.png?st=2023-11-28T02%3A42%3A47Z&se=2023-11-28T04%3A42%3A47Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-11-27T15%3A02%3A57Z&ske=2023-11-28T15%3A02%3A57Z&sks=b&skv=2021-08-06&sig=OuPiw8ewGOH6d6rpd12PxO071ZhWMhshS0ovsgRAqmU%3D" width="100%" />
+
+#### NEW! Ask a question about an image.
+
+``` r
+openai::create_chat_completion(
+  model = 'gpt-4-vision-preview',
+  messages = list(
+    list(role = 'user', 
+         content = list(
+           list(
+             type = 'text',
+             text = 'What is this a picture of?'
+           ),
+           list(
+             type = 'image_url',
+             image_url = list(
+               url = img_url
+             )
+           )
+         )
+    )
+  ), 
+  max_tokens = 1000
+)$choices[[1]]$message$content
+#> [1] "This is a highly detailed, idealized digital artwork or photograph of a cat with striking blue eyes surrounded by lush greenery, flowers, and butterflies. The lighting is warm and soft, highlighting the cat's face and giving the scene an almost magical or ethereal quality. The cat appears to be a Ragdoll, characterized by its large blue eyes, pointed color scheme, and luxurious semi-longhair coat. The image composition is created to evoke a sense of tranquility and harmony with nature."
+```
+
+#### Use the included addin to code collaboratively with a model.
 
 ![](addin_demo_1.gif)
 

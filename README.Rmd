@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-openai provides R scripts to use the [Open AI API](https://beta.openai.com/docs/api-reference/)
+The openai package provides R scripts to use the [Open AI API](https://platform.openai.com/docs/api-reference/). In order to get started you will need to sign up for an account at [https://openai.com/](https://openai.com/). You will also need to set up billing to use the API.
 
 ## Installation
 
@@ -43,42 +43,69 @@ More details on authentication can be found [here](https://platform.openai.com/d
 
 ## Examples
 
-Retrieve the currently available models used to generate text.
+#### Retrieve the currently available models used to generate text.
 
 ```{r}
 library(openai)
-library(purrr)
 
-list_models() %>% 
-  pluck('data') %>% 
-  map_dfr(compact)
+list_models()$data %>% 
+  dplyr::bind_rows()
 ```
 
-Create a completion request using the davinci engine.
+#### Create a completion request using the davinci engine.
+
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+create_chat_completion(
+  model = 'gpt-3.5-turbo', 
+  messages = 
+    list(
+      list(role = 'system', content = 'You are a helpful assistant.'),
+      list(role = 'user', content = 'Who won the world series in 2020?'),
+      list(role = 'assistant', content = 'The Los Angeles Dodgers won the world series in 2020.'),
+      list(role = 'user', content = 'Where was it played?')
+    )
+)$choices[[1]]$message$content
+```
+
+#### Generate an image based on a prompt.
 
 ```{r}
-create_completion(
-  model = 'davinci', 
-  max_tokens = 30,
-  temperature = .5,
-  top_p = 1,
-  n = 1,
-  stream = F, 
-  prompt = 'Once upon a time') %>% 
-  pluck('choices') %>% 
-  map_chr(~ .x$text)
+img_url <-
+  create_image(
+    model = 'dall-e-3',
+    prompt = 'a white siamese cat', 
+    n = 1, 
+    size = '1024x1024')$data[[1]]$url
+
+knitr::include_graphics(img_url)
 ```
 
-Generate an image based on a prompt.
+#### NEW! Ask a question about an image.
 
 ```{r}
-create_image(
-  prompt = "A rollerskating zebra", 
-  n = 1, 
-  response_format = "url")
+openai::create_chat_completion(
+  model = 'gpt-4-vision-preview',
+  messages = list(
+    list(role = 'user', 
+         content = list(
+           list(
+             type = 'text',
+             text = 'What is this a picture of?'
+           ),
+           list(
+             type = 'image_url',
+             image_url = list(
+               url = img_url
+             )
+           )
+         )
+    )
+  ), 
+  max_tokens = 1000
+)$choices[[1]]$message$content
 ```
 
-Use the included addin to code collaboratively with a model.
+#### Use the included addin to code collaboratively with a model.
 
 ![](addin_demo_1.gif)
 
