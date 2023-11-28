@@ -23,9 +23,10 @@ extract_r_code2 <- function(txt){
     tibble::tibble(txt = txt %>% stringr::str_split("```") %>% purrr::pluck(1), 
                    is_code = stringr::str_detect(txt, '^[rR]')) %>% 
     dplyr::mutate(txt = txt %>% stringr::str_remove_all("^[rR]") %>% stringr::str_remove_all("^\\n*") %>% stringr::str_remove_all("\\n*$"),
-                  txt = ifelse(!is_code, paste0("# ", txt), txt)) %>%
+                  txt = ifelse(!is_code, paste0("# ", txt %>% stringr::str_replace_all("\n", "jfjfjfjfjfjfjfj")), txt)) %>%
     dplyr::filter(txt != '') %>%
     dplyr::pull(txt) %>%
+    stringr::str_replace_all("jfjfjfjfjfjfjfj", "\n# ") %>%
     paste(collapse = '\n\n')
   
   parsed_txt
