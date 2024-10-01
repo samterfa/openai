@@ -9,9 +9,9 @@ list_tools <- function(){
   )
 }
 
-run_code_screen_capture <- function(code_to_run){
+run_code_screen_capture <- function(code_to_run, take_screenshot = TRUE){
   
-  tmpfile <- tempfile(fileext = '.png')
+  if(take_screenshot) tmpfile <- tempfile(fileext = '.png')
   # 
   # p <-
   #   promises::future_promise(
@@ -23,12 +23,16 @@ run_code_screen_capture <- function(code_to_run){
   # Clear Screen and run the code
   rstudioapi::sendToConsole('cat("\\014")', execute = TRUE, focus = TRUE)
   rstudioapi::sendToConsole(code_to_run, execute = TRUE, focus = TRUE)
-  Sys.sleep(2)
-  screenshot::screenshot(file = tmpfile)
+  
+  if(take_screenshot){
+    Sys.sleep(2)
+    screenshot::screenshot(file = tmpfile)
+    return(tmpfile)
+  }else{
+    return(NULL)
+  }
   
   #$ promises::promise_all(p)
-  
-  tmpfile
 }
 
 
@@ -286,7 +290,7 @@ use_assistant_screenshot <- function(session = make_session(), new_message = NUL
 }
 
 
-vision_prompting <- function(iter = 5, initial_task = 'Recreate and iteratively improve this plot until it is publication ready.', final_task = '', img_path = NULL){
+vision_prompting <- function(iter = 5, initial_task = 'Recreate and iteratively improve this plot until it is publication ready.', final_task = '', img_path = 'sample_plot.png'){
   
   model <- 'gpt-4-vision-preview'
   
@@ -299,7 +303,7 @@ vision_prompting <- function(iter = 5, initial_task = 'Recreate and iteratively 
       list(
         list(
           role = 'system',
-          content = 'You are an R code generator. The user will run your code in an RStudio session and return to you a screenshot showing you the results of running your code. Only return R code.'
+          content = 'You are an R code generator. The user will run your code in an RStudio session and return to you a screenshot showing you the results of running your code. There is limited space in the screenshot so only return a little code at a time! Only return R code.'
         ),
         list(
           role = 'user',
@@ -323,7 +327,7 @@ vision_prompting <- function(iter = 5, initial_task = 'Recreate and iteratively 
       list(
         list(
           role = 'system',
-          content = 'You are an R code generator. The user will run your code in an RStudio session and return to you a screenshot showing you the results of running your code. Only return R code.'
+          content = 'You are an R code generator. The user will run your code in an RStudio session and return to you a screenshot showing you the results of running your code. Screen space is limited for each screenshot; only try one thing at a time so that you can see the full output.  Only return R code.'
         ),
         list(
           role = 'user',
@@ -407,6 +411,16 @@ vision_prompting <- function(iter = 5, initial_task = 'Recreate and iteratively 
     messages %>%
     append(list(return_message))
   
+  code_to_run <-
+    return_message$content %>%
+    extract_r_code()
+  
+  if(!is.na(code_to_run)){
+    run_code_screen_capture(code_to_run, take_screenshot = FALSE)
+  }
+  
+  readr::write_rds(messages, '~/Desktop/openai_testing/messages.rds')
+  
   messages
 }
 
@@ -418,11 +432,18 @@ extract_r_code <- function(txt){
   txt  %>% 
     stringr::str_replace_all("\n", "asdfdareasrads") %>% 
     stringr::str_extract("(?<=```).*(?=```)") %>% 
-    str_remove("^[rR]") %>% 
-    stringr::str_replace_all(fixed("asdfdareasrads"), "\n")
+    stringr::str_remove("^[rR]") %>% 
+    stringr::str_replace_all(stringr::fixed("asdfdareasrads"), "\n")
 }
 
 
+extract_json <- function(txt){
+  txt  %>% 
+    stringr::str_replace_all("\n", "asdfdareasrads") %>% 
+    stringr::str_extract("(?<=```).*(?=```)") %>% 
+    stringr::str_remove("^json|^JSON") %>% 
+    stringr::str_replace_all(stringr::fixed("asdfdareasrads"), "\n")
+}
 
 
 
@@ -440,10 +461,10 @@ run_r_code <- function(code_to_run){
                      tidyverse_quiet = TRUE,
                      html_preview = FALSE) %>% 
         paste(collapse = '\n') %>%
-        str_remove(fixed("suppressMessages({x <- readr::read_csv('~/Desktop/data.csv')}); "))
+        stringr::str_remove(stringr::fixed("suppressMessages({x <- readr::read_csv('~/Desktop/data.csv')}); "))
     )
   )
 }
 
 
-
+###### vision_prompting(iter = 10, initial_task = 'There is a dataset x in memory. Iteratively explore the dataset using tidyverse functions. After some exploration, return 3 significant, meaningful, complex insights from the dataset.', final_task = 'Summarize the most significant insights you found including helpful plots in a file called "insights.Rmd".')
